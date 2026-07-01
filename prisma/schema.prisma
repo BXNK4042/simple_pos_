@@ -1,0 +1,37 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Product {
+  id      Int               @id @default(autoincrement())
+  barcode String            @unique
+  name    String
+  price   Float
+  stock   Int               @default(0)
+  items   TransactionItem[]
+}
+
+model Transaction {
+  id              Int               @id @default(autoincrement())
+  total           Float
+  status          String            @default("paid") // paid | pending | failed
+  stripePaymentId String?
+  createdAt       DateTime          @default(now())
+  items           TransactionItem[]
+}
+
+model TransactionItem {
+  id            Int         @id @default(autoincrement())
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  transactionId Int
+  product       Product     @relation(fields: [productId], references: [id])
+  productId     Int
+  quantity      Int
+  subtotal      Float
+}
