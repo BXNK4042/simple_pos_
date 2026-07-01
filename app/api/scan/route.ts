@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma"
+import { emitScan, type ScanResult } from "@/lib/scan-events"
 
 const CURRENCY = (process.env.NEXT_PUBLIC_CURRENCY ?? "thb").toUpperCase()
 
@@ -13,9 +14,9 @@ export async function POST(request: Request) {
     )
   }
 
-  const rawBarcode =
-    body && typeof body === "object" ? (body as Record<string, unknown>).barcode : undefined
-  const barcode = rawBarcode === undefined ? "" : String(rawBarcode).trim()
+  const record = (body && typeof body === "object" ? body : {}) as Record<string, unknown>
+
+  const barcode = record.barcode === undefined ? "" : String(record.barcode).trim()
 
   if (!barcode) {
     return Response.json(
@@ -23,6 +24,8 @@ export async function POST(request: Request) {
       { status: 400 }
     )
   }
+
+  const deviceId = record.device_id === undefined ? "" : String(record.device_id).trim()
 
   try {
     let product = await prisma.product.findUnique({ where: { barcode } })
@@ -38,12 +41,22 @@ export async function POST(request: Request) {
       })
     }
 
-    return Response.json({
-      status: "ok",
+    const scan: ScanResult = {
+      id: product.id,
+      barcode: product.barcode,
       product: product.name,
       price: product.price,
+      stock: product.stock,
       currency: CURRENCY,
-    })
+    }
+
+    // Only hardware scanners (which send device_id) are broadcast over SSE.
+    // Manual cashier entry (no device_id) is added to the cart from the response.
+    if (deviceId) {
+      emitScan(scan)
+    }
+
+    return Response.json({ status: "ok", ...scan })
   } catch (error) {
     console.error("/api/scan error:", error)
     return Response.json(
