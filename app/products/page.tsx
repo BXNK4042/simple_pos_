@@ -1,17 +1,38 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { ProductsTable, type ProductRow } from "@/components/products-table"
+import { prisma } from "@/lib/prisma"
 
-export default function ProductsPage() {
+export const metadata: Metadata = {
+  title: "Products | POS System",
+}
+
+export default async function ProductsPage() {
+  const rows = await prisma.product.findMany({
+    select: { id: true, barcode: true, name: true, price: true, stock: true },
+    orderBy: { name: "asc" },
+  })
+
+  const products: ProductRow[] = rows
+
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Products</h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        Manage the product catalog (shadcn Table + Dialog) arrives in a later milestone.
-        New products are auto-created on first scan.
-      </p>
-      <Button asChild variant="outline" className="mt-6">
-        <Link href="/">Back home</Link>
-      </Button>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Products</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Catalog of all products. New items are auto-created on first scan.
+          </p>
+        </div>
+        <Button asChild variant="outline">
+          <Link href="/">Back home</Link>
+        </Button>
+      </div>
+
+      <div className="mt-6">
+        <ProductsTable products={products} />
+      </div>
     </main>
   )
 }

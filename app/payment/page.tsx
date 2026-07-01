@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { useHydrated } from "@/hooks/use-hydrated"
-import { formatTHB, useCart } from "@/lib/cart"
+import { formatTHB } from "@/lib/format"
+import { useCart } from "@/lib/cart"
 
 export default function PaymentPage() {
   const cart = useCart()

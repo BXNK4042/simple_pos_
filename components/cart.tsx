@@ -10,7 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { formatTHB, type CartItem } from "@/lib/cart"
+import { formatTHB } from "@/lib/format"
+import { type CartItem } from "@/lib/cart"
 
 type CartProps = {
   items: CartItem[]

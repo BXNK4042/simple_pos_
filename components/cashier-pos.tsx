@@ -11,7 +11,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Cart } from "@/components/cart"
-import { formatTHB, useCart, type AddStatus } from "@/lib/cart"
+import { formatTHB } from "@/lib/format"
+import { useCart, type AddStatus } from "@/lib/cart"
 import type { ScanResult } from "@/lib/scan-events"
 
 function notify(status: AddStatus, name: string) {
