@@ -26,12 +26,12 @@ export type TransactionRow = {
   itemCount: number
 }
 
-type Column = { key: SortKey; label: string; align: "left" | "right" }
+type Column = { key: SortKey; label: string }
 
 const COLUMNS: Column[] = [
-  { key: "date", label: "Date", align: "left" },
-  { key: "total", label: "Total", align: "right" },
-  { key: "status", label: "Status", align: "left" },
+  { key: "date", label: "Date" },
+  { key: "total", label: "Total" },
+  { key: "status", label: "Status" },
 ]
 
 type TransactionsTableProps = {
@@ -59,8 +59,7 @@ export function TransactionsTable({ rows, current, emptyMessage }: TransactionsT
         aria-sort={active ? (current.dir === "asc" ? "ascending" : "descending") : "none"}
         className={
           "inline-flex items-center gap-1 text-xs font-medium uppercase tracking-wide transition-colors hover:text-foreground " +
-          (active ? "text-foreground" : "text-muted-foreground") +
-          (col.align === "right" ? " flex-row-reverse" : "")
+          (active ? "text-foreground" : "text-muted-foreground")
         }
       >
         {children}
@@ -74,22 +73,19 @@ export function TransactionsTable({ rows, current, emptyMessage }: TransactionsT
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Receipt #</TableHead>
+            <TableHead className="text-center">Receipt #</TableHead>
             {COLUMNS.map((col) => (
-              <TableHead
-                key={col.key}
-                className={col.align === "right" ? "text-right" : undefined}
-              >
+              <TableHead key={col.key} className="text-center">
                 <SortLink col={col}>{col.label}</SortLink>
               </TableHead>
             ))}
-            <TableHead className="text-right">Items</TableHead>
+            <TableHead className="text-center">Items</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row.id} className="relative">
-              <TableCell>
+              <TableCell className="text-center">
                 <Link
                   href={`/transactions/${row.id}`}
                   aria-label={`View receipt #${row.id}`}
@@ -97,18 +93,18 @@ export function TransactionsTable({ rows, current, emptyMessage }: TransactionsT
                 />
                 <span className="font-medium">#{row.id}</span>
               </TableCell>
-              <TableCell className="tabular-nums text-muted-foreground">
+              <TableCell className="text-center tabular-nums text-muted-foreground">
                 {formatDateTime(row.createdAt)}
               </TableCell>
-              <TableCell className="text-right tabular-nums">
+              <TableCell className="text-center tabular-nums">
                 {formatTHB(row.total)}
               </TableCell>
-              <TableCell>
+              <TableCell className="text-center">
                 <Badge variant={STATUS_BADGE_VARIANT[row.status]}>
                   {row.status}
                 </Badge>
               </TableCell>
-              <TableCell className="text-right tabular-nums text-muted-foreground">
+              <TableCell className="text-center tabular-nums text-muted-foreground">
                 {row.itemCount}
               </TableCell>
             </TableRow>
