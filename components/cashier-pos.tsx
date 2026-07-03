@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { CreditCard, ScanLine, Trash2 } from "lucide-react"
+import { ArrowLeft, CreditCard, ScanLine, Trash2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -80,7 +80,12 @@ export function CashierPos() {
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8">
-      <header className="mb-6 flex items-center justify-between">
+      <header className="mb-6 flex items-center gap-4">
+        <Button asChild variant="outline" size="icon">
+          <Link href="/" aria-label="Back home">
+            <ArrowLeft />
+          </Link>
+        </Button>
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-semibold tracking-tight">Cashier</h1>
           <Badge variant={scanner === "live" ? "default" : "secondary"} className="gap-1">
@@ -92,9 +97,6 @@ export function CashierPos() {
             {scanner === "live" ? "Scanner live" : scanner === "offline" ? "Scanner offline" : "Connecting"}
           </Badge>
         </div>
-        <Button asChild variant="ghost">
-          <Link href="/">Home</Link>
-        </Button>
       </header>
 
       <form onSubmit={handleScan} className="mb-6 flex gap-2">

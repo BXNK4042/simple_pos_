@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Banknote, ReceiptText, ShoppingCart, TriangleAlert } from "lucide-react"
+import { ArrowLeft, Banknote, ReceiptText, ShoppingCart, TriangleAlert } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DashboardKpis, type Kpi } from "@/components/dashboard/kpis"
 import { RevenueChart, type RevenuePoint } from "@/components/dashboard/revenue-chart"
@@ -117,16 +117,18 @@ export default async function DashboardPage() {
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center gap-4">
+        <Button asChild variant="outline" size="icon">
+          <Link href="/" aria-label="Back home">
+            <ArrowLeft />
+          </Link>
+        </Button>
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Sales and stock overview.
           </p>
         </div>
-        <Button asChild variant="outline">
-          <Link href="/">Back home</Link>
-        </Button>
       </div>
 
       <div className="mt-6">
