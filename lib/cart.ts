@@ -69,21 +69,24 @@ function toCartItem(scan: ScanResult): CartItem {
 
 export function useCart() {
   const [items, dispatch] = useReducer(reducer, [])
-  const didHydrate = useRef(false)
+  const loadedRef = useRef(false)
 
   useEffect(() => {
-    dispatch({ type: "set", items: readStorage() })
-    didHydrate.current = true
-  }, [])
-
-  useEffect(() => {
-    if (!didHydrate.current) return
+    if (!loadedRef.current) return
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
     } catch {
       // ignore quota / availability errors
     }
   }, [items])
+
+  useEffect(() => {
+    loadedRef.current = true
+    dispatch({ type: "set", items: readStorage() })
+    return () => {
+      loadedRef.current = false
+    }
+  }, [])
 
   const addItem = useCallback(
     (scan: ScanResult): AddStatus => {
