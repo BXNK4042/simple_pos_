@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { formatTHB } from "@/lib/format"
+import { isLow, isOut } from "@/lib/inventory"
 
 export type ProductRow = {
   id: number
@@ -21,8 +22,6 @@ export type ProductRow = {
   price: number
   stock: number
 }
-
-const LOW_STOCK = 5
 
 type SortKey = "name" | "barcode" | "price" | "stock"
 type SortDir = "asc" | "desc"
@@ -144,8 +143,8 @@ export function ProductsTable({ products }: { products: ProductRow[] }) {
           </TableHeader>
           <TableBody>
             {rows.map((p) => {
-              const out = p.stock <= 0
-              const low = !out && p.stock <= LOW_STOCK
+              const out = isOut(p.stock)
+              const low = isLow(p.stock)
               return (
                 <TableRow key={p.id}>
                   <TableCell className="font-medium">{p.name}</TableCell>
