@@ -1,5 +1,7 @@
 import { CashierPos } from "@/components/cashier-pos"
+import { verifySession } from "@/lib/auth"
 
-export default function CashierPage() {
+export default async function CashierPage() {
+  await verifySession()
   return <CashierPos />
 }

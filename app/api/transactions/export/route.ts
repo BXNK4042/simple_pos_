@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma"
+import { requireOwnerResponse } from "@/lib/auth"
 import {
   buildOrderBy,
   buildWhere,
@@ -13,6 +14,9 @@ import {
  * not just the current page.
  */
 export async function GET(request: Request) {
+  const session = await requireOwnerResponse()
+  if (session instanceof Response) return session
+
   const url = new URL(request.url)
   const query = parseQuery(Object.fromEntries(url.searchParams.entries()))
   const where = buildWhere(query)

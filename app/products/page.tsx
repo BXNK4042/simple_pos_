@@ -4,12 +4,14 @@ import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ProductsTable, type ProductRow } from "@/components/products-table"
 import { prisma } from "@/lib/prisma"
+import { requireRole } from "@/lib/auth"
 
 export const metadata: Metadata = {
   title: "Products | POS System",
 }
 
 export default async function ProductsPage() {
+  await requireRole("owner")
   const rows = await prisma.product.findMany({
     select: { id: true, barcode: true, name: true, price: true, stock: true },
     orderBy: { name: "asc" },

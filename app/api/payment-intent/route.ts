@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { stripe, toStripeAmount, CURRENCY } from "@/lib/stripe"
+import { requireSessionResponse } from "@/lib/auth"
 
 type RequestItem = { id: number; quantity: number }
 
@@ -59,6 +60,9 @@ async function buildServerItems(
 }
 
 export async function POST(request: Request) {
+  const session = await requireSessionResponse()
+  if (session instanceof Response) return session
+
   let body: unknown
   try {
     body = await request.json()
@@ -104,6 +108,7 @@ export async function POST(request: Request) {
         total,
         status: "pending",
         stripePaymentId: paymentIntent.id,
+        cashierId: session.userId,
         items: {
           create: items.map((i) => ({
             productId: i.product.id,

@@ -1,8 +1,13 @@
 import { subscribeScan } from "@/lib/scan-events"
+import { requireSessionResponse } from "@/lib/auth"
 
 export const dynamic = "force-dynamic"
 
 export async function GET(request: Request) {
+  // Same-origin EventSource from the cashier page carries the session cookie.
+  const session = await requireSessionResponse()
+  if (session instanceof Response) return session
+
   const encoder = new TextEncoder()
 
   const stream = new ReadableStream({

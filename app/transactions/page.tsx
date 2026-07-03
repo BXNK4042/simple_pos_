@@ -9,6 +9,7 @@ import {
 } from "@/components/transactions/transactions-table"
 import { TransactionsPagination } from "@/components/transactions/pagination"
 import { prisma } from "@/lib/prisma"
+import { requireRole } from "@/lib/auth"
 import {
   PAGE_SIZE,
   buildExportHref,
@@ -27,6 +28,7 @@ export default async function TransactionsPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
+  await requireRole("owner")
   const query = parseQuery(await searchParams)
   const where = buildWhere(query)
   const orderBy = buildOrderBy(query)

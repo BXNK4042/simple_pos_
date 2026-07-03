@@ -12,6 +12,7 @@ import {
 import { prisma } from "@/lib/prisma"
 import { formatTHB } from "@/lib/format"
 import { LOW_STOCK } from "@/lib/inventory"
+import { requireRole } from "@/lib/auth"
 
 export const metadata: Metadata = {
   title: "Dashboard | POS System",
@@ -33,6 +34,7 @@ function formatDayLabel(d: Date): string {
 }
 
 export default async function DashboardPage() {
+  await requireRole("owner")
   // One nested-items query covers revenue, items-sold, and top products.
   const paidTxns = await prisma.transaction.findMany({
     where: { status: "paid" },

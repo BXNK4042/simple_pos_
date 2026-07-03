@@ -1,10 +1,14 @@
 import { prisma } from "@/lib/prisma"
+import { requireSessionResponse } from "@/lib/auth"
 
 /**
  * Looks up a Transaction by id so the success page can confirm the webhook has
  * flipped it to "paid" (and poll briefly if it hasn't yet).
  */
 export async function GET(request: Request) {
+  const session = await requireSessionResponse()
+  if (session instanceof Response) return session
+
   const url = new URL(request.url)
   const tid = Number(url.searchParams.get("tid"))
   if (!Number.isFinite(tid) || tid <= 0) {

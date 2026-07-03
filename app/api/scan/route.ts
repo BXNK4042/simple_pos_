@@ -1,9 +1,19 @@
 import { prisma } from "@/lib/prisma"
 import { emitScan, type ScanResult } from "@/lib/scan-events"
+import { authorizeScan } from "@/lib/auth"
 
 const CURRENCY = (process.env.NEXT_PUBLIC_CURRENCY ?? "thb").toUpperCase()
 
 export async function POST(request: Request) {
+  // Called by the ESP32 (X-Device-Key) or the cashier browser (session cookie).
+  const auth = await authorizeScan(request)
+  if (!auth.ok) {
+    return Response.json(
+      { status: "error", message: "Unauthorized" },
+      { status: 401 }
+    )
+  }
+
   let body: unknown
   try {
     body = await request.json()

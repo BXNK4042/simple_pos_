@@ -17,6 +17,7 @@ import { PrintButton } from "@/components/transactions/print-button"
 import { prisma } from "@/lib/prisma"
 import { formatTHB, formatDateTime } from "@/lib/format"
 import { STATUS_BADGE_VARIANT, stripeDashboardUrl, type TxnStatus } from "@/lib/transactions"
+import { requireRole } from "@/lib/auth"
 
 export const dynamic = "force-dynamic"
 
@@ -26,6 +27,7 @@ export default async function TransactionDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
+  await requireRole("owner")
   const tid = Number(id)
   if (!Number.isFinite(tid) || tid <= 0) notFound()
 

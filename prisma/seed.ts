@@ -1,6 +1,49 @@
 import "dotenv/config"
+import bcrypt from "bcrypt"
 import { prisma } from "@/lib/prisma"
 import type { Product } from "@/generated/prisma/client"
+
+const OWNER_EMAIL = process.env.ADMIN_EMAIL ?? "owner@pos.local"
+const OWNER_PASSWORD = process.env.ADMIN_PASSWORD ?? "owner123!"
+const CASHIER_EMAIL = process.env.CASHIER_EMAIL ?? "cashier@pos.local"
+const CASHIER_PASSWORD = process.env.CASHIER_PASSWORD ?? "cashier123!"
+
+type AccountSeed = {
+  email: string
+  name: string
+  role: "owner" | "cashier"
+  password: string
+}
+
+const accounts: AccountSeed[] = [
+  { email: OWNER_EMAIL, name: "Owner", role: "owner", password: OWNER_PASSWORD },
+  { email: CASHIER_EMAIL, name: "Demo Cashier", role: "cashier", password: CASHIER_PASSWORD },
+]
+
+// Idempotent: creates missing accounts but never overwrites an existing
+// password (re-seeding won't undo a password change). Use the reset script to
+// force a new password.
+async function seedUsers() {
+  let created = 0
+  for (const a of accounts) {
+    const existing = await prisma.user.findUnique({ where: { email: a.email } })
+    if (existing) {
+      await prisma.user.update({
+        where: { id: existing.id },
+        data: { name: a.name, role: a.role },
+      })
+    } else {
+      const passwordHash = await bcrypt.hash(a.password, 10)
+      await prisma.user.create({
+        data: { email: a.email, name: a.name, role: a.role, passwordHash },
+      })
+      created += 1
+    }
+  }
+  console.log(
+    `Users ready (created ${created}). Owner: ${OWNER_EMAIL} | Cashier: ${CASHIER_EMAIL}`
+  )
+}
 
 type ProductSeed = {
   barcode: string
@@ -45,6 +88,8 @@ const transactions: TxnSeed[] = [
 const seedTag = (id: string) => `seed-mock-${id}`
 
 async function main() {
+  await seedUsers()
+
   for (const p of products) {
     await prisma.product.upsert({
       where: { barcode: p.barcode },
