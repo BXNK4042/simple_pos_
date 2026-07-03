@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ScanLine, LayoutDashboard, Package } from "lucide-react";
+import { ScanLine, LayoutDashboard, Package, ReceiptText } from "lucide-react";
 
 const links = [
   { href: "/cashier", label: "Cashier", desc: "Scan items & take payments", icon: ScanLine },
   { href: "/dashboard", label: "Dashboard", desc: "Sales & stock overview", icon: LayoutDashboard },
+  { href: "/transactions", label: "Transactions", desc: "Browse sales & receipts", icon: ReceiptText },
   { href: "/products", label: "Products", desc: "Manage the product catalog", icon: Package },
 ];
 
@@ -19,7 +20,7 @@ export default function Home() {
           Choose where to go.
         </p>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {links.map(({ href, label, desc, icon: Icon }) => (
             <Button
               key={href}

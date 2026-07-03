@@ -1,0 +1,142 @@
+import Link from "next/link"
+import { notFound } from "next/navigation"
+import { ArrowLeft, ExternalLink } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { PrintButton } from "@/components/transactions/print-button"
+import { prisma } from "@/lib/prisma"
+import { formatTHB, formatDateTime } from "@/lib/format"
+import { STATUS_BADGE_VARIANT, stripeDashboardUrl, type TxnStatus } from "@/lib/transactions"
+
+export const dynamic = "force-dynamic"
+
+export default async function TransactionDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const tid = Number(id)
+  if (!Number.isFinite(tid) || tid <= 0) notFound()
+
+  const transaction = await prisma.transaction.findUnique({
+    where: { id: tid },
+    select: {
+      id: true,
+      total: true,
+      status: true,
+      stripePaymentId: true,
+      createdAt: true,
+      items: {
+        select: {
+          id: true,
+          quantity: true,
+          subtotal: true,
+          product: { select: { name: true, barcode: true } },
+        },
+      },
+    },
+  })
+
+  if (!transaction) notFound()
+
+  const status = transaction.status as TxnStatus
+  const stripeUrl = stripeDashboardUrl(transaction.stripePaymentId)
+
+  return (
+    <main className="mx-auto w-full max-w-2xl px-4 py-8">
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <Button asChild variant="ghost" size="sm">
+          <Link href="/transactions">
+            <ArrowLeft />
+            Back to transactions
+          </Link>
+        </Button>
+        <PrintButton />
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span>Receipt #{transaction.id}</span>
+            <Badge variant={STATUS_BADGE_VARIANT[status]}>{status}</Badge>
+          </CardTitle>
+          <div className="space-y-0.5 text-sm text-muted-foreground">
+            <div>{formatDateTime(transaction.createdAt)} (Bangkok time)</div>
+            {transaction.stripePaymentId ? (
+              <div className="font-mono text-xs">
+                {stripeUrl ? (
+                  <a
+                    href={stripeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-primary hover:underline"
+                  >
+                    {transaction.stripePaymentId}
+                    <ExternalLink className="size-3" />
+                  </a>
+                ) : (
+                  transaction.stripePaymentId
+                )}
+              </div>
+            ) : null}
+          </div>
+        </CardHeader>
+
+        <CardContent className="space-y-4">
+          {transaction.items.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              This transaction has no line items.
+            </p>
+          ) : (
+            <div className="rounded-lg border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Product</TableHead>
+                    <TableHead className="text-center">Qty</TableHead>
+                    <TableHead className="text-right">Subtotal</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {transaction.items.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell>
+                        <div className="font-medium">{item.product.name}</div>
+                        <div className="font-mono text-xs text-muted-foreground">
+                          {item.product.barcode}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center tabular-nums">
+                        {item.quantity}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {formatTHB(item.subtotal)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+
+          <Separator />
+          <div className="flex justify-between text-base font-semibold">
+            <span>Total</span>
+            <span className="tabular-nums">{formatTHB(transaction.total)}</span>
+          </div>
+        </CardContent>
+      </Card>
+    </main>
+  )
+}
