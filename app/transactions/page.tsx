@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Download } from "lucide-react"
+import { ArrowLeft, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { TransactionsFilters } from "@/components/transactions/filters"
 import {
@@ -65,11 +65,18 @@ export default async function TransactionsPage({
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8">
       <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Transactions</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            All sales, newest first. Click a row to view its receipt.
-          </p>
+        <div className="flex items-center gap-4">
+          <Button asChild variant="outline" size="icon">
+            <Link href="/" aria-label="Back home">
+              <ArrowLeft />
+            </Link>
+          </Button>
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Transactions</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              All sales, newest first. Click a row to view its receipt.
+            </p>
+          </div>
         </div>
         <div className="flex gap-2">
           {total > 0 && (
@@ -80,9 +87,6 @@ export default async function TransactionsPage({
               </Link>
             </Button>
           )}
-          <Button asChild variant="outline" size="sm">
-            <Link href="/">Back home</Link>
-          </Button>
         </div>
       </div>
 
