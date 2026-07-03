@@ -17,11 +17,23 @@ model Product {
   items   TransactionItem[]
 }
 
+model User {
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  name         String
+  passwordHash String
+  role         String        @default("cashier") // owner | cashier
+  createdAt    DateTime      @default(now())
+  transactions Transaction[]
+}
+
 model Transaction {
   id              Int               @id @default(autoincrement())
   total           Float
   status          String            @default("paid") // paid | pending | failed
   stripePaymentId String?
+  cashierId       Int?
+  cashier         User?             @relation(fields: [cashierId], references: [id])
   createdAt       DateTime          @default(now())
   items           TransactionItem[]
 }
