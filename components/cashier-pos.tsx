@@ -4,16 +4,18 @@ import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { ArrowLeft, CreditCard, ScanLine, Trash2 } from "lucide-react"
+import { ArrowLeft, CreditCard, Trash2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Cart } from "@/components/cart"
+import { ProductSearch, type ProductSearchHit } from "@/components/product-search"
 import { formatTHB } from "@/lib/format"
 import { useCart, type AddStatus } from "@/lib/cart"
 import type { ScanResult } from "@/lib/scan-events"
+
+const CURRENCY = (process.env.NEXT_PUBLIC_CURRENCY ?? "thb").toUpperCase()
 
 function notify(status: AddStatus, name: string) {
   if (status === "capped") toast.warning(`"${name}" is at stock limit`)
@@ -23,7 +25,6 @@ function notify(status: AddStatus, name: string) {
 export function CashierPos() {
   const router = useRouter()
   const cart = useCart()
-  const [barcode, setBarcode] = useState("")
   const [loading, setLoading] = useState(false)
   const [scanner, setScanner] = useState<"connecting" | "live" | "offline">("connecting")
 
@@ -47,10 +48,8 @@ export function CashierPos() {
     return () => es.close()
   }, [])
 
-  async function handleScan(event: React.FormEvent) {
-    event.preventDefault()
-    const code = barcode.trim()
-    if (!code || loading) return
+  async function handleBarcodeSubmit(code: string) {
+    if (loading) return
 
     setLoading(true)
     try {
@@ -65,12 +64,23 @@ export function CashierPos() {
         return
       }
       notify(cart.addItem(data), data.product)
-      setBarcode("")
     } catch {
       toast.error("Network error")
     } finally {
       setLoading(false)
     }
+  }
+
+  function handleSelectProduct(p: ProductSearchHit) {
+    const scan: ScanResult = {
+      id: p.id,
+      barcode: p.barcode,
+      product: p.name,
+      price: p.price,
+      stock: p.stock,
+      currency: CURRENCY,
+    }
+    notify(cart.addItem(scan), scan.product)
   }
 
   function handlePay() {
@@ -99,23 +109,15 @@ export function CashierPos() {
         </div>
       </header>
 
-      <form onSubmit={handleScan} className="mb-6 flex gap-2">
-        <div className="relative flex-1">
-          <ScanLine className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={barcode}
-            onChange={(e) => setBarcode(e.target.value)}
-            placeholder="Scan or type a barcode, then press Enter"
-            className="pl-9"
-            autoFocus
-            disabled={loading}
-            inputMode="numeric"
-          />
-        </div>
-        <Button type="submit" disabled={loading || barcode.trim() === ""}>
-          {loading ? "Adding…" : "Add"}
-        </Button>
-      </form>
+      <div className="mb-6">
+        <ProductSearch
+          placeholder="Scan or type a barcode, then press Enter"
+          submitLabel="Add"
+          busy={loading}
+          onSelectProduct={handleSelectProduct}
+          onSubmitBarcode={handleBarcodeSubmit}
+        />
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">

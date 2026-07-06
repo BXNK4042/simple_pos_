@@ -34,6 +34,21 @@ export const resetPasswordSchema = z.object({
   newPassword: passwordSchema,
 })
 
+export const productCreateSchema = z.object({
+  barcode: z.string().min(1, { error: "Barcode is required." }).trim(),
+  name: z.string().min(2, { error: "Name must be at least 2 characters." }).trim(),
+  price: z.coerce.number().nonnegative({ error: "Price cannot be negative." }),
+})
+
+export const stockInItemSchema = z.object({
+  id: z.number().int().positive(),
+  quantity: z.number().int().positive({ error: "Quantity must be at least 1." }),
+})
+
+export const stockInSchema = z.object({
+  items: z.array(stockInItemSchema).min(1, { error: "Add at least one item." }),
+})
+
 export type FormState =
   | {
       errors?: Record<string, string[]>

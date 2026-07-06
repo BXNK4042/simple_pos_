@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ScanLine, LayoutDashboard, Package, ReceiptText, Settings, Users } from "lucide-react";
+import { ScanLine, LayoutDashboard, Package, PackagePlus, ReceiptText, Settings, Users } from "lucide-react";
 import { verifySession } from "@/lib/auth";
 
 const links = [
@@ -8,6 +8,7 @@ const links = [
   { href: "/dashboard", label: "Dashboard", desc: "Sales & stock overview", icon: LayoutDashboard },
   { href: "/transactions", label: "Transactions", desc: "Browse sales & receipts", icon: ReceiptText },
   { href: "/products", label: "Products", desc: "Manage the product catalog", icon: Package },
+  { href: "/stock-in", label: "Stock-in", desc: "Add stock by scanning barcodes", icon: PackagePlus },
   { href: "/users", label: "Users", desc: "Create cashiers & reset passwords", icon: Users },
   { href: "/settings", label: "Settings", desc: "Your account", icon: Settings },
 ];

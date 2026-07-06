@@ -6,6 +6,7 @@ import { decrypt, SESSION_COOKIE } from "@/lib/session"
 const ADMIN_PREFIXES = [
   "/dashboard",
   "/products",
+  "/stock-in",
   "/transactions",
   "/settings",
   "/users",
