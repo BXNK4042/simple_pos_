@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export default function ProductsLoading() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-8">
+    <main className="mx-auto w-full max-w-6xl px-4 py-8">
       <Skeleton className="h-8 w-32" />
       <Skeleton className="mt-2 h-4 w-72" />
 

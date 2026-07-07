@@ -65,7 +65,7 @@ export default async function TransactionsPage({
     : "No transactions match these filters."
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-8" id="main">
+    <main className="mx-auto w-full max-w-6xl px-4 py-8" id="main">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Transactions</h1>

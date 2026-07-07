@@ -21,13 +21,7 @@ export default async function Home() {
 
   return (
     <main id="main" className="flex flex-1 flex-col bg-background">
-      <div
-        className={cn(
-          "mx-auto w-full px-4 py-8 sm:py-12",
-          // Cashier view: narrow & centered
-          isOwner ? "max-w-6xl" : "max-w-3xl"
-        )}
-      >
+      <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:py-12">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
           {/* Hero + Cat */}
           <section
