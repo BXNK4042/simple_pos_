@@ -17,10 +17,7 @@ export function DashboardKpis({ kpis }: { kpis: Kpi[] }) {
       {kpis.map(({ label, value, hint, icon: Icon, tone, featured }) => (
         <Card
           key={label}
-          className={cn(
-            "relative overflow-hidden shadow-sm shadow-primary/5",
-            featured && "sm:col-span-2 lg:col-span-2 lg:row-span-1"
-          )}
+          className="relative overflow-hidden shadow-sm shadow-primary/5"
         >
           {featured && (
             <div
@@ -44,12 +41,7 @@ export function DashboardKpis({ kpis }: { kpis: Kpi[] }) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div
-              className={cn(
-                "font-semibold tracking-tight tabular-nums",
-                featured ? "text-4xl" : "text-2xl"
-              )}
-            >
+            <div className="text-2xl font-semibold tracking-tight tabular-nums">
               {value}
             </div>
             {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
