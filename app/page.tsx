@@ -57,14 +57,14 @@ export default async function Home() {
             )}
           >
             <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-br from-background/70 via-background/20 to-transparent lg:block" />
-            <div className="pointer-events-none absolute right-0 bottom-0 hidden h-[70%] w-[42%] lg:block">
+            <div className="pointer-events-none m-2 absolute right-0 bottom-0 hidden h-[70%] w-[42%] lg:block">
               <Image
                 src={mascotImg}
                 alt="POS mascot waving hello"
                 fill
                 priority
                 sizes="33vw"
-                className="object-contain object-right-bottom"
+                className="animate-float object-contain object-right-bottom"
               />
             </div>
             <div className="relative z-10 flex min-h-[200px] flex-col justify-center p-6 sm:min-h-[240px] lg:min-h-[340px]">
@@ -72,10 +72,10 @@ export default async function Home() {
                 <span className="size-1.5 rounded-full bg-brand" />
                 {isOwner ? "Owner workspace" : "Cashier workspace"}
               </div>
-              <h1 className="max-w-md text-3xl font-semibold tracking-tight text-balance sm:text-4xl lg:text-5xl">
+              <h1 className="max-w-md text-2xl font-semibold tracking-tight text-balance sm:text-3xl lg:text-4xl">
                 Hi {greetingName}, ready to make a sale?
               </h1>
-              <p className="mt-3 max-w-sm text-sm text-muted-foreground sm:text-base">
+              <p className="mt-3 max-w-sm text-xs text-muted-foreground sm:text-sm">
                 {isOwner
                   ? "Open the cashier to ring up orders, or manage the store below."
                   : "Open the cashier to scan items and take payments."}
