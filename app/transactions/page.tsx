@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { ArrowLeft, Download } from "lucide-react"
+import { Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { TransactionsFilters } from "@/components/transactions/filters"
 import {
@@ -20,7 +20,7 @@ import {
 } from "@/lib/transactions"
 
 export const metadata: Metadata = {
-  title: "Transactions | POS System",
+  title: "Transactions",
 }
 
 export default async function TransactionsPage({
@@ -65,20 +65,13 @@ export default async function TransactionsPage({
     : "No transactions match these filters."
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-8">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Button asChild variant="outline" size="icon">
-            <Link href="/" aria-label="Back home">
-              <ArrowLeft />
-            </Link>
-          </Button>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Transactions</h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              All sales, newest first. Click a row to view its receipt.
-            </p>
-          </div>
+    <main className="mx-auto w-full max-w-5xl px-4 py-8" id="main">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Transactions</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            All sales, newest first. Click a row to view its receipt.
+          </p>
         </div>
         <div className="flex gap-2">
           {total > 0 && (

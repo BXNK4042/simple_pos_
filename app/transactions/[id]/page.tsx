@@ -56,7 +56,7 @@ export default async function TransactionDetailPage({
   const stripeUrl = stripeDashboardUrl(transaction.stripePaymentId)
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8">
+    <main className="mx-auto w-full max-w-2xl px-4 py-8" id="main">
       <div className="mb-6 flex items-center justify-between gap-4">
         <Button asChild variant="ghost" size="sm">
           <Link href="/transactions">
@@ -67,14 +67,14 @@ export default async function TransactionDetailPage({
         <PrintButton />
       </div>
 
-      <Card>
+      <Card className="shadow-sm shadow-primary/5">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Receipt #{transaction.id}</span>
-            <Badge variant={STATUS_BADGE_VARIANT[status]}>{status}</Badge>
+            <Badge variant={STATUS_BADGE_VARIANT[status]} className="capitalize">{status}</Badge>
           </CardTitle>
           <div className="space-y-0.5 text-sm text-muted-foreground">
-            <div>{formatDateTime(transaction.createdAt)} (Bangkok time)</div>
+            <div className="tabular-nums">{formatDateTime(transaction.createdAt)} (Bangkok time)</div>
             {transaction.stripePaymentId ? (
               <div className="font-mono text-xs">
                 {stripeUrl ? (
@@ -101,10 +101,10 @@ export default async function TransactionDetailPage({
               This transaction has no line items.
             </p>
           ) : (
-            <div className="rounded-lg border">
+            <div className="rounded-lg border border-border/70 overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-muted/40">
                     <TableHead>Product</TableHead>
                     <TableHead className="text-center">Qty</TableHead>
                     <TableHead className="text-right">Subtotal</TableHead>
@@ -122,7 +122,7 @@ export default async function TransactionDetailPage({
                       <TableCell className="text-center tabular-nums">
                         {item.quantity}
                       </TableCell>
-                      <TableCell className="text-right tabular-nums">
+                      <TableCell className="text-right tabular-nums font-medium">
                         {formatTHB(item.subtotal)}
                       </TableCell>
                     </TableRow>

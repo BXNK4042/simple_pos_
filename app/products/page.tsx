@@ -1,13 +1,10 @@
 import type { Metadata } from "next"
-import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { ProductsTable, type ProductRow } from "@/components/products-table"
 import { prisma } from "@/lib/prisma"
 import { requireRole } from "@/lib/auth"
 
 export const metadata: Metadata = {
-  title: "Products | POS System",
+  title: "Products",
 }
 
 export default async function ProductsPage() {
@@ -20,19 +17,12 @@ export default async function ProductsPage() {
   const products: ProductRow[] = rows
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-4 py-8">
-      <div className="flex items-center gap-4">
-        <Button asChild variant="outline" size="icon">
-          <Link href="/" aria-label="Back home">
-            <ArrowLeft />
-          </Link>
-        </Button>
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Products</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Catalog of all products. New items are auto-created on first scan.
-          </p>
-        </div>
+    <main className="mx-auto w-full max-w-5xl px-4 py-8" id="main">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Products</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Catalog of all products. New items are auto-created on first scan.
+        </p>
       </div>
 
       <div className="mt-6">

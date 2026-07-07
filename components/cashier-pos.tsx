@@ -1,16 +1,16 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { ArrowLeft, CreditCard, Trash2 } from "lucide-react"
+import { CreditCard, Trash2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Cart } from "@/components/cart"
 import { ProductSearch, type ProductSearchHit } from "@/components/product-search"
+import { cn } from "@/lib/utils"
 import { formatTHB } from "@/lib/format"
 import { useCart, type AddStatus } from "@/lib/cart"
 import type { ScanResult } from "@/lib/scan-events"
@@ -89,22 +89,31 @@ export function CashierPos() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-8">
+    <div className="mx-auto w-full max-w-5xl px-4 py-8" id="main">
       <header className="mb-6 flex items-center gap-4">
-        <Button asChild variant="outline" size="icon">
-          <Link href="/" aria-label="Back home">
-            <ArrowLeft />
-          </Link>
-        </Button>
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-semibold tracking-tight">Cashier</h1>
-          <Badge variant={scanner === "live" ? "default" : "secondary"} className="gap-1">
+          <Badge
+            variant={
+              scanner === "live" ? "success" : scanner === "offline" ? "warning" : "secondary"
+            }
+            className="gap-1.5"
+          >
             <span
-              className={`size-1.5 rounded-full ${
-                scanner === "live" ? "bg-emerald-500" : "bg-amber-500"
-              }`}
+              className={cn(
+                "size-1.5 rounded-full",
+                scanner === "live"
+                  ? "bg-success animate-pulse"
+                  : scanner === "offline"
+                    ? "bg-warning"
+                    : "bg-muted-foreground"
+              )}
             />
-            {scanner === "live" ? "Scanner live" : scanner === "offline" ? "Scanner offline" : "Connecting"}
+            {scanner === "live"
+              ? "Scanner live"
+              : scanner === "offline"
+                ? "Scanner offline"
+                : "Connecting"}
           </Badge>
         </div>
       </header>
@@ -130,7 +139,7 @@ export function CashierPos() {
         </div>
 
         <aside className="lg:col-span-1">
-          <Card className="sticky top-6">
+          <Card className="sticky top-20 shadow-sm shadow-primary/5">
             <CardHeader>
               <CardTitle>Order</CardTitle>
             </CardHeader>
@@ -147,6 +156,7 @@ export function CashierPos() {
             </CardContent>
             <CardFooter className="flex flex-col gap-2">
               <Button
+                variant="accent"
                 className="w-full"
                 size="lg"
                 onClick={handlePay}

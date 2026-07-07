@@ -36,7 +36,7 @@ export default function SuccessPage() {
 
 function SuccessFallback() {
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-8">
+    <div className="mx-auto w-full max-w-2xl px-4 py-8" id="main">
       <h1 className="mb-6 text-2xl font-semibold tracking-tight">Payment</h1>
       <Card>
         <CardContent className="flex flex-col items-center gap-3 py-12 text-center text-sm text-muted-foreground">
@@ -111,7 +111,7 @@ function SuccessContent() {
   }, [state, cart])
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-8">
+    <div className="mx-auto w-full max-w-2xl px-4 py-8" id="main">
       <h1 className="mb-6 text-2xl font-semibold tracking-tight">Payment</h1>
 
       {!hydrated ? null : state.kind === "loading" ? (
@@ -131,10 +131,12 @@ function SuccessContent() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
+        <Card className="shadow-sm shadow-success/10">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CheckCircle2 className="size-5 text-emerald-500" />
+              <span className="flex size-8 items-center justify-center rounded-full bg-success/15 text-success">
+                <CheckCircle2 className="size-5" />
+              </span>
               Payment successful
             </CardTitle>
           </CardHeader>
@@ -158,7 +160,7 @@ function SuccessContent() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col items-stretch gap-2">
-            <Button asChild>
+            <Button asChild variant="accent">
               <Link href="/cashier">New sale</Link>
             </Button>
             <Button asChild variant="outline">

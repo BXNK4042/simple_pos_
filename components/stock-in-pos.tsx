@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
 import { toast } from "sonner"
-import { ArrowLeft, Loader2, PackagePlus, Trash2 } from "lucide-react"
+import { Loader2, PackagePlus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { ProductSearch, type ProductSearchHit } from "@/components/product-search"
 import { StockInList } from "@/components/stock-in-list"
 import { NewProductDialog, type NewProduct } from "@/components/new-product-dialog"
@@ -120,19 +120,12 @@ export function StockInPos() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-8">
-      <header className="mb-6 flex items-center gap-4">
-        <Button asChild variant="outline" size="icon">
-          <Link href="/" aria-label="Back home">
-            <ArrowLeft />
-          </Link>
-        </Button>
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Stock-in</h1>
-          <p className="text-sm text-muted-foreground">
-            Scan or type a barcode to add stock. New barcodes open a create dialog.
-          </p>
-        </div>
+    <div className="mx-auto w-full max-w-5xl px-4 py-8" id="main">
+      <header className="mb-6">
+        <h1 className="text-2xl font-semibold tracking-tight">Stock-in</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Scan or type a barcode to add stock. New barcodes open a create dialog.
+        </p>
       </header>
 
       <div className="mb-6">
@@ -147,7 +140,12 @@ export function StockInPos() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          {!hydrated ? null : (
+          {!hydrated ? (
+            <div className="rounded-xl border border-border/70 p-4">
+              <Skeleton className="h-20 w-full" />
+              <Skeleton className="mt-3 h-20 w-full" />
+            </div>
+          ) : (
             <StockInList
               items={list.items}
               onInc={list.inc}
@@ -159,7 +157,7 @@ export function StockInPos() {
         </div>
 
         <aside className="lg:col-span-1">
-          <Card className="sticky top-6">
+          <Card className="sticky top-20 shadow-sm shadow-primary/5">
             <CardHeader>
               <CardTitle>Restock summary</CardTitle>
             </CardHeader>
@@ -175,6 +173,7 @@ export function StockInPos() {
             </CardContent>
             <CardFooter className="flex flex-col gap-2">
               <Button
+                variant="accent"
                 className="w-full"
                 size="lg"
                 onClick={handleApply}

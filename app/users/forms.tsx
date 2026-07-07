@@ -78,7 +78,7 @@ export function CreateUserForm() {
           {pending ? "Creating…" : "Create account"}
         </Button>
         {state.ok && state.message ? (
-          <p className="text-sm text-emerald-600 dark:text-emerald-500">{state.message}</p>
+          <p className="text-sm text-success">{state.message}</p>
         ) : null}
         {state.message && !state.ok ? (
           <p className="text-sm text-destructive">{state.message}</p>
@@ -137,7 +137,7 @@ export function ResetPasswordForm({
       </Button>
       {feedback ? (
         <p className={feedback.ok
-          ? "text-xs text-emerald-600 dark:text-emerald-500"
+          ? "text-xs text-success"
           : "text-xs text-destructive"}>
           {feedback.message}
         </p>

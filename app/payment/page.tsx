@@ -8,6 +8,7 @@ import { ArrowLeft, CreditCard, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useHydrated } from "@/hooks/use-hydrated"
 import { formatTHB } from "@/lib/format"
 import { useCart } from "@/lib/cart"
@@ -55,10 +56,23 @@ export default function PaymentPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-8">
+    <div className="mx-auto w-full max-w-2xl px-4 py-8" id="main">
       <h1 className="mb-6 text-2xl font-semibold tracking-tight">Payment</h1>
 
-      {!hydrated ? null : cart.count === 0 && !pending ? (
+      {!hydrated ? (
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-5 w-32" />
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-4/5" />
+            <Skeleton className="h-4 w-2/3" />
+            <Skeleton className="h-px w-full" />
+            <Skeleton className="h-5 w-1/2" />
+          </CardContent>
+        </Card>
+      ) : cart.count === 0 && !pending ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-4 py-12 text-center text-sm text-muted-foreground">
             Your cart is empty.
@@ -71,7 +85,7 @@ export default function PaymentPage() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
+        <Card className="shadow-sm shadow-primary/5">
           <CardHeader>
             <CardTitle>Order summary</CardTitle>
           </CardHeader>
@@ -114,6 +128,7 @@ export default function PaymentPage() {
           ) : (
             <CardFooter className="flex flex-col items-stretch gap-2">
               <Button
+                variant="accent"
                 className="w-full"
                 size="lg"
                 onClick={startPayment}

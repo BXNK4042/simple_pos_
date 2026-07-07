@@ -1,6 +1,6 @@
 "use client"
 
-import { Minus, Plus, Trash2 } from "lucide-react"
+import { Minus, Plus, ScanLine, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -23,8 +23,16 @@ type CartProps = {
 export function Cart({ items, onInc, onDec, onRemove }: CartProps) {
   if (items.length === 0) {
     return (
-      <div className="flex h-40 items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground">
-        Cart is empty — scan an item to start.
+      <div className="flex h-48 flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border/70 bg-card/50 text-center">
+        <span className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+          <ScanLine className="size-5" />
+        </span>
+        <div>
+          <p className="text-sm font-medium">Cart is empty</p>
+          <p className="text-xs text-muted-foreground">
+            Scan or search an item to start an order.
+          </p>
+        </div>
       </div>
     )
   }

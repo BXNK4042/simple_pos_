@@ -24,10 +24,10 @@ export const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
 
 export const STATUS_BADGE_VARIANT: Record<
   TxnStatus,
-  "default" | "secondary" | "destructive" | "outline"
+  "default" | "secondary" | "success" | "warning" | "destructive" | "outline"
 > = {
-  paid: "secondary",
-  pending: "outline",
+  paid: "success",
+  pending: "warning",
   failed: "destructive",
 }
 

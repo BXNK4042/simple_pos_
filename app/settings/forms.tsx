@@ -10,7 +10,7 @@ import type { FieldErrors } from "@/lib/auth-client"
 
 function Status({ state }: { state: { ok?: boolean; message?: string } }) {
   if (state.ok && state.message) {
-    return <p className="text-sm text-emerald-600 dark:text-emerald-500">{state.message}</p>
+    return <p className="text-sm text-success">{state.message}</p>
   }
   if (state.message) {
     return <p className="text-sm text-destructive">{state.message}</p>

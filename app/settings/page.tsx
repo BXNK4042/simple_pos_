@@ -1,13 +1,10 @@
 import type { Metadata } from "next"
-import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getCurrentUser, requireRole } from "@/lib/auth"
 import { ChangeEmailForm, ChangePasswordForm } from "./forms"
 
 export const metadata: Metadata = {
-  title: "Settings | POS System",
+  title: "Settings",
 }
 
 export default async function SettingsPage() {
@@ -16,23 +13,16 @@ export default async function SettingsPage() {
   if (!user) return null
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8">
-      <div className="flex items-center gap-4">
-        <Button asChild variant="outline" size="icon">
-          <Link href="/" aria-label="Back home">
-            <ArrowLeft />
-          </Link>
-        </Button>
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Manage your owner account.
-          </p>
-        </div>
+    <main className="mx-auto w-full max-w-2xl px-4 py-8" id="main">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Manage your owner account.
+        </p>
       </div>
 
       <div className="mt-6 space-y-4">
-        <Card>
+        <Card className="shadow-sm shadow-primary/5">
           <CardHeader>
             <CardTitle>Change password</CardTitle>
           </CardHeader>
@@ -41,7 +31,7 @@ export default async function SettingsPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-sm shadow-primary/5">
           <CardHeader>
             <CardTitle>Change email</CardTitle>
           </CardHeader>

@@ -76,7 +76,7 @@ export function ProductsTable({ products }: { products: ProductRow[] }) {
 
   if (products.length === 0) {
     return (
-      <div className="flex h-40 items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground">
+      <div className="flex h-48 flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border/70 bg-card/50 text-center text-sm text-muted-foreground">
         No products yet — they are auto-created on first scan.
       </div>
     )
@@ -95,7 +95,7 @@ export function ProductsTable({ products }: { products: ProductRow[] }) {
         />
       </div>
 
-      <div className="rounded-lg border">
+      <div className="rounded-lg border border-border/70">
         <Table>
           <TableHeader>
             <TableRow>
@@ -128,7 +128,7 @@ export function ProductsTable({ products }: { products: ProductRow[] }) {
                           : "ascending"
                       }`}
                       className={
-                        "inline-flex items-center gap-1 text-xs font-medium uppercase tracking-wide transition-colors hover:text-foreground " +
+                        "inline-flex items-center gap-1 text-xs font-medium tracking-wide transition-colors hover:text-foreground " +
                         (active ? "text-foreground" : "text-muted-foreground") +
                         (col.align === "right" ? " flex-row-reverse" : "")
                       }
@@ -158,7 +158,7 @@ export function ProductsTable({ products }: { products: ProductRow[] }) {
                     {out ? (
                       <Badge variant="destructive">Out of stock</Badge>
                     ) : low ? (
-                      <Badge variant="destructive">{p.stock}</Badge>
+                      <Badge variant="warning">{p.stock}</Badge>
                     ) : (
                       <Badge variant="secondary">{p.stock}</Badge>
                     )}

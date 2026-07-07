@@ -1,8 +1,5 @@
 import type { Metadata } from "next"
-import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Table,
@@ -15,10 +12,10 @@ import {
 import { prisma } from "@/lib/prisma"
 import { requireRole } from "@/lib/auth"
 import { formatDateTime } from "@/lib/format"
-import { CreateUserForm, ResetPasswordForm } from "./forms"
+import { CreateUserForm } from "./forms"
 
 export const metadata: Metadata = {
-  title: "Users | POS System",
+  title: "Users",
 }
 
 export default async function UsersPage() {
@@ -30,22 +27,15 @@ export default async function UsersPage() {
   })
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-4 py-8">
-      <div className="flex items-center gap-4">
-        <Button asChild variant="outline" size="icon">
-          <Link href="/" aria-label="Back home">
-            <ArrowLeft />
-          </Link>
-        </Button>
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Create cashier accounts and reset passwords.
-          </p>
-        </div>
+    <main className="mx-auto w-full max-w-4xl px-4 py-8" id="main">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Create cashier accounts and manage the team.
+        </p>
       </div>
 
-      <Card className="mt-6">
+      <Card className="mt-6 shadow-sm shadow-primary/5">
         <CardHeader>
           <CardTitle>New account</CardTitle>
         </CardHeader>
@@ -54,10 +44,10 @@ export default async function UsersPage() {
         </CardContent>
       </Card>
 
-      <div className="mt-6 rounded-lg border">
+      <div className="mt-6 rounded-lg border border-border/70 overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-muted/40">
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>
@@ -77,7 +67,7 @@ export default async function UsersPage() {
                     {u.role}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-muted-foreground">
+                <TableCell className="text-muted-foreground tabular-nums">
                   {formatDateTime(u.createdAt)}
                 </TableCell>
               </TableRow>
@@ -85,19 +75,6 @@ export default async function UsersPage() {
           </TableBody>
         </Table>
       </div>
-
-      {/*<div className="mt-6 space-y-3">
-        <h2 className="text-sm font-medium text-muted-foreground">
-          Reset a password
-        </h2>
-        {users.map((u) => (
-          <Card key={u.id}>
-            <CardContent className="py-4">
-              <ResetPasswordForm userId={u.id} userName={u.name} />
-            </CardContent>
-          </Card>
-        ))}
-      </div>*/}
     </main>
   )
 }
