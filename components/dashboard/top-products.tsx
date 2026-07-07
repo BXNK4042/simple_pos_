@@ -41,7 +41,7 @@ export function TopProducts({ data }: { data: TopProduct[] }) {
   const hasData = data.length > 0
 
   return (
-    <Card className="h-full">
+    <Card className="h-full shadow-sm shadow-primary/5">
       <CardHeader>
         <CardTitle>Top products</CardTitle>
         <CardDescription>By units sold (all-time)</CardDescription>
@@ -74,7 +74,7 @@ export function TopProducts({ data }: { data: TopProduct[] }) {
             </ResponsiveContainer>
           </div>
         ) : (
-          <div className="flex h-64 items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground">
+          <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-border/70 text-sm text-muted-foreground">
             No sales recorded yet.
           </div>
         )}

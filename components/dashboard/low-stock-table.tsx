@@ -23,7 +23,7 @@ export function LowStockTable({ rows }: { rows: LowStockRow[] }) {
   const hasRows = rows.length > 0
 
   return (
-    <Card className="h-full">
+    <Card className="h-full shadow-sm shadow-primary/5">
       <CardHeader>
         <CardTitle>Low-stock alerts</CardTitle>
         <CardDescription>
@@ -32,7 +32,7 @@ export function LowStockTable({ rows }: { rows: LowStockRow[] }) {
       </CardHeader>
       <CardContent>
         {hasRows ? (
-          <div className="rounded-lg border">
+          <div className="rounded-lg border border-border/70">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -57,7 +57,7 @@ export function LowStockTable({ rows }: { rows: LowStockRow[] }) {
                       {isOut(row.stock) ? (
                         <Badge variant="destructive">Out of stock</Badge>
                       ) : (
-                        <Badge variant="destructive">{row.stock}</Badge>
+                        <Badge variant="warning">{row.stock}</Badge>
                       )}
                     </TableCell>
                   </TableRow>
@@ -66,7 +66,7 @@ export function LowStockTable({ rows }: { rows: LowStockRow[] }) {
             </Table>
           </div>
         ) : (
-          <div className="flex h-64 items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground">
+          <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-border/70 text-sm text-muted-foreground">
             Everything is well stocked.
           </div>
         )}

@@ -34,7 +34,7 @@ export function RevenueChart({ data }: { data: RevenuePoint[] }) {
   const hasData = data.some((d) => d.revenue > 0)
 
   return (
-    <Card className="h-full">
+    <Card className="h-full shadow-sm shadow-primary/5">
       <CardHeader>
         <CardTitle>Revenue</CardTitle>
         <CardDescription>Last 7 days (paid orders)</CardDescription>
@@ -46,8 +46,12 @@ export function RevenueChart({ data }: { data: RevenuePoint[] }) {
               <AreaChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
                 <defs>
                   <linearGradient id="revenueFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.35} />
+                    <stop offset="0%" stopColor="var(--chart-3)" stopOpacity={0.4} />
                     <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="revenueStroke" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="var(--chart-1)" />
+                    <stop offset="100%" stopColor="var(--chart-3)" />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border" />
@@ -70,15 +74,15 @@ export function RevenueChart({ data }: { data: RevenuePoint[] }) {
                 <Area
                   type="monotone"
                   dataKey="revenue"
-                  stroke="var(--chart-1)"
-                  strokeWidth={2}
+                  stroke="url(#revenueStroke)"
+                  strokeWidth={2.5}
                   fill="url(#revenueFill)"
                 />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         ) : (
-          <div className="flex h-64 items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground">
+          <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-border/70 text-sm text-muted-foreground">
             No paid orders in the last 7 days yet.
           </div>
         )}
