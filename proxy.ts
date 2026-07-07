@@ -33,8 +33,11 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  // Run on everything except API routes, static/asset paths, and /login.
+  // Run on everything except API routes, static/asset paths, files with an
+  // extension (images, fonts, etc.), and /login. Public/ assets like
+  // /Waving_Cat_1.png must bypass the proxy or the image optimizer receives
+  // an auth-redirect instead of the file bytes.
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|login).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|login|.*\\..*).*)",
   ],
 }
