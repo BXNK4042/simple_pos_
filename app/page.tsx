@@ -5,32 +5,12 @@ import Link from "next/link"
 // changes the hash → URL → automatic cache bust. No version bump, no
 // manual cache clearing. Just overwrite the file and reload.
 import mascotImg from "@/assets/mascot.png"
-import {
-  Banknote,
-  LayoutDashboard,
-  Package,
-  PackagePlus,
-  ReceiptText,
-  ScanLine,
-  Settings,
-  TriangleAlert,
-  Users,
-} from "lucide-react"
+import { Banknote, ReceiptText, ScanLine, TriangleAlert } from "lucide-react"
 import { getCurrentUser, verifySession } from "@/lib/auth"
 import { cn } from "@/lib/utils"
 import { formatTHB } from "@/lib/format"
 import { getHomeStats } from "@/lib/stats"
 import type { LucideIcon } from "lucide-react"
-
-type ManageItem = { href: string; label: string; icon: LucideIcon }
-
-const MANAGE: ManageItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/transactions", label: "Transactions", icon: ReceiptText },
-  { href: "/products", label: "Products", icon: Package },
-  { href: "/stock-in", label: "Stock-in", icon: PackagePlus },
-  { href: "/users", label: "Users", icon: Users },
-]
 
 export default async function Home() {
   const session = await verifySession()
@@ -133,36 +113,6 @@ export default async function Home() {
                 tone={stats.lowStockCount > 0 ? "warning" : "default"}
               />
             </>
-          ) : null}
-
-          {/* Manage — owner only */}
-          {isOwner ? (
-            <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm shadow-primary/5 md:col-span-6">
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-                  Manage
-                </h2>
-                <Link
-                  href="/settings"
-                  className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <Settings className="size-3.5" />
-                  Settings
-                </Link>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {MANAGE.map(({ href, label, icon: Icon }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className="group inline-flex items-center gap-2 rounded-lg border border-border/60 bg-background px-3 py-2 text-sm font-medium transition-all hover:border-primary/30 hover:bg-primary/[0.04] hover:text-primary"
-                  >
-                    <Icon className="size-4 text-muted-foreground transition-colors group-hover:text-primary" />
-                    {label}
-                  </Link>
-                ))}
-              </div>
-            </section>
           ) : null}
         </div>
       </div>
