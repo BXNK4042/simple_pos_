@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-import { SiteHeader } from "@/components/site-header";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SiteTopBar } from "@/components/site-top-bar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { getCurrentUser } from "@/lib/auth";
 import "./globals.css";
@@ -46,8 +48,13 @@ export default async function RootLayout({
           <a href="#main" className="skip-link">
             Skip to content
           </a>
-          <SiteHeader user={user} />
-          {children}
+          <SidebarProvider>
+            <AppSidebar user={user} />
+            <div className="relative flex w-full flex-1 flex-col">
+              <SiteTopBar />
+              {children}
+            </div>
+          </SidebarProvider>
           <Toaster position="top-right" richColors closeButton />
         </ThemeProvider>
       </body>
