@@ -10,6 +10,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Separator } from "@/components/ui/separator"
 import { Cart } from "@/components/cart"
 import { ProductSearch, type ProductSearchHit } from "@/components/product-search"
+import { PageContainer } from "@/components/page-container"
 import { cn } from "@/lib/utils"
 import { formatTHB } from "@/lib/format"
 import { useCart, type AddStatus } from "@/lib/cart"
@@ -89,7 +90,7 @@ export function CashierPos() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8" id="main">
+    <PageContainer>
       <header className="mb-6 flex items-center gap-4">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-semibold tracking-tight">Cashier</h1>
@@ -178,6 +179,6 @@ export function CashierPos() {
           </Card>
         </aside>
       </div>
-    </div>
+    </PageContainer>
   )
 }

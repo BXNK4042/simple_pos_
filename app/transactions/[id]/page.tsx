@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { PrintButton } from "@/components/transactions/print-button"
+import { PageContainer } from "@/components/page-container"
 import { prisma } from "@/lib/prisma"
 import { formatTHB, formatDateTime } from "@/lib/format"
 import { STATUS_BADGE_VARIANT, stripeDashboardUrl, type TxnStatus } from "@/lib/transactions"
@@ -56,7 +57,7 @@ export default async function TransactionDetailPage({
   const stripeUrl = stripeDashboardUrl(transaction.stripePaymentId)
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8" id="main">
+    <PageContainer maxWidth="2xl">
       <div className="mb-6 flex items-center justify-between gap-4">
         <Button asChild variant="ghost" size="sm">
           <Link href="/transactions">
@@ -139,6 +140,6 @@ export default async function TransactionDetailPage({
           </div>
         </CardContent>
       </Card>
-    </main>
+    </PageContainer>
   )
 }

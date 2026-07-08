@@ -7,6 +7,7 @@ import { CheckCircle2, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { PageContainer } from "@/components/page-container"
 import { useHydrated } from "@/hooks/use-hydrated"
 import { formatTHB } from "@/lib/format"
 import { useCart } from "@/lib/cart"
@@ -36,7 +37,7 @@ export default function SuccessPage() {
 
 function SuccessFallback() {
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-8" id="main">
+    <PageContainer maxWidth="2xl">
       <h1 className="mb-6 text-2xl font-semibold tracking-tight">Payment</h1>
       <Card>
         <CardContent className="flex flex-col items-center gap-3 py-12 text-center text-sm text-muted-foreground">
@@ -44,7 +45,7 @@ function SuccessFallback() {
           Confirming your payment…
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   )
 }
 
@@ -111,7 +112,7 @@ function SuccessContent() {
   }, [state, cart])
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-8" id="main">
+    <PageContainer maxWidth="2xl">
       <h1 className="mb-6 text-2xl font-semibold tracking-tight">Payment</h1>
 
       {!hydrated ? null : state.kind === "loading" ? (
@@ -169,6 +170,6 @@ function SuccessContent() {
           </CardFooter>
         </Card>
       )}
-    </div>
+    </PageContainer>
   )
 }

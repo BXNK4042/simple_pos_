@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { ProductsTable, type ProductRow } from "@/components/products-table"
+import { PageContainer } from "@/components/page-container"
 import { prisma } from "@/lib/prisma"
 import { requireRole } from "@/lib/auth"
 
@@ -17,7 +18,7 @@ export default async function ProductsPage() {
   const products: ProductRow[] = rows
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-8" id="main">
+    <PageContainer>
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Products</h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -28,6 +29,6 @@ export default async function ProductsPage() {
       <div className="mt-6">
         <ProductsTable products={products} />
       </div>
-    </main>
+    </PageContainer>
   )
 }

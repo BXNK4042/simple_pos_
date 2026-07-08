@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { PageContainer } from "@/components/page-container"
 import { prisma } from "@/lib/prisma"
 import { requireRole } from "@/lib/auth"
 import { formatDateTime } from "@/lib/format"
@@ -27,7 +28,7 @@ export default async function UsersPage() {
   })
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-4 py-8" id="main">
+    <PageContainer maxWidth="4xl">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -75,6 +76,6 @@ export default async function UsersPage() {
           </TableBody>
         </Table>
       </div>
-    </main>
+    </PageContainer>
   )
 }

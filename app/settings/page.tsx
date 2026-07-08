@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { PageContainer } from "@/components/page-container"
 import { getCurrentUser, requireRole } from "@/lib/auth"
 import { ChangeEmailForm, ChangePasswordForm } from "./forms"
 
@@ -13,7 +14,7 @@ export default async function SettingsPage() {
   if (!user) return null
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8" id="main">
+    <PageContainer maxWidth="2xl">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -40,6 +41,6 @@ export default async function SettingsPage() {
           </CardContent>
         </Card>
       </div>
-    </main>
+    </PageContainer>
   )
 }

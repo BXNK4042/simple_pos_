@@ -7,6 +7,7 @@ import Link from "next/link"
 import mascotImg from "@/assets/mascot.png"
 import { Banknote, ReceiptText, ScanLine, TriangleAlert } from "lucide-react"
 import { getCurrentUser, verifySession } from "@/lib/auth"
+import { PageContainer } from "@/components/page-container"
 import { cn } from "@/lib/utils"
 import { formatTHB } from "@/lib/format"
 import { getHomeStats } from "@/lib/stats"
@@ -20,9 +21,8 @@ export default async function Home() {
   const stats = isOwner ? await getHomeStats() : null
 
   return (
-    <main id="main" className="flex flex-1 flex-col bg-background">
-      <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:py-12">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
+    <PageContainer className="sm:py-12">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
           {/* Hero + Cat */}
           <section
             className={cn(
@@ -31,7 +31,7 @@ export default async function Home() {
             )}
           >
             <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-br from-background/70 via-background/20 to-transparent lg:block" />
-            <div className="pointer-events-none m-2 absolute right-0 bottom-0 hidden h-[70%] w-[42%] lg:block">
+            <div className="pointer-events-none mx-5 absolute right-0 bottom-0 hidden h-[70%] w-[42%] lg:block">
               <Image
                 src={mascotImg}
                 alt="POS mascot waving hello"
@@ -109,8 +109,7 @@ export default async function Home() {
             </>
           ) : null}
         </div>
-      </div>
-    </main>
+    </PageContainer>
   )
 }
 

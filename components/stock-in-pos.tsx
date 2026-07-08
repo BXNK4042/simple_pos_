@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { ProductSearch, type ProductSearchHit } from "@/components/product-search"
 import { StockInList } from "@/components/stock-in-list"
 import { NewProductDialog, type NewProduct } from "@/components/new-product-dialog"
+import { PageContainer } from "@/components/page-container"
 import { useHydrated } from "@/hooks/use-hydrated"
 import { useStockIn, type StockInItem } from "@/lib/stock-in"
 
@@ -120,7 +121,7 @@ export function StockInPos() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8" id="main">
+    <PageContainer>
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight">Stock-in</h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -204,6 +205,6 @@ export function StockInPos() {
         }}
         onCreated={handleCreated}
       />
-    </div>
+    </PageContainer>
   )
 }

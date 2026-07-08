@@ -6,6 +6,7 @@ import { DashboardKpis, type Kpi } from "@/components/dashboard/kpis"
 import { RevenueChart } from "@/components/dashboard/revenue-chart"
 import { TopProducts } from "@/components/dashboard/top-products"
 import { LowStockTable } from "@/components/dashboard/low-stock-table"
+import { PageContainer } from "@/components/page-container"
 import { formatTHB } from "@/lib/format"
 import { requireRole } from "@/lib/auth"
 import { getDashboardStats } from "@/lib/stats"
@@ -50,7 +51,7 @@ export default async function DashboardPage() {
   ]
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-8" id="main">
+    <PageContainer>
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -79,6 +80,6 @@ export default async function DashboardPage() {
       <div className="mt-6">
         <LowStockTable rows={stats.lowStockRows} />
       </div>
-    </main>
+    </PageContainer>
   )
 }

@@ -13,6 +13,7 @@ import { useHydrated } from "@/hooks/use-hydrated"
 import { formatTHB } from "@/lib/format"
 import { useCart } from "@/lib/cart"
 import { CheckoutForm } from "@/components/checkout-form"
+import { PageContainer } from "@/components/page-container"
 
 type PendingPayment = {
   clientSecret: string
@@ -56,7 +57,7 @@ export default function PaymentPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-8" id="main">
+    <PageContainer maxWidth="2xl">
       <h1 className="mb-6 text-2xl font-semibold tracking-tight">Payment</h1>
 
       {!hydrated ? (
@@ -147,6 +148,6 @@ export default function PaymentPage() {
           )}
         </Card>
       )}
-    </div>
+    </PageContainer>
   )
 }

@@ -8,6 +8,7 @@ import {
   type TransactionRow,
 } from "@/components/transactions/transactions-table"
 import { TransactionsPagination } from "@/components/transactions/pagination"
+import { PageContainer } from "@/components/page-container"
 import { prisma } from "@/lib/prisma"
 import { requireRole } from "@/lib/auth"
 import {
@@ -65,7 +66,7 @@ export default async function TransactionsPage({
     : "No transactions match these filters."
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-8" id="main">
+    <PageContainer>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Transactions</h1>
@@ -92,6 +93,6 @@ export default async function TransactionsPage({
 
         <TransactionsPagination current={query} totalPages={pages} />
       </div>
-    </main>
+    </PageContainer>
   )
 }

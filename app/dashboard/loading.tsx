@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { PageContainer } from "@/components/page-container"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function DashboardLoading() {
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-8">
+    <PageContainer>
       <Skeleton className="h-8 w-40" />
       <Skeleton className="mt-2 h-4 w-64" />
 
@@ -42,6 +43,6 @@ export default function DashboardLoading() {
           </Card>
         ))}
       </div>
-    </main>
+    </PageContainer>
   )
 }
