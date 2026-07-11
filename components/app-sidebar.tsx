@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import {
-  Banknote,
   LayoutDashboard,
   LogOut,
   Package,
@@ -82,10 +82,16 @@ export function AppSidebar({ user }: { user: SafeUser | null }) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href={home}>
-                <span className="flex size-8 items-center justify-center rounded-md bg-brand text-brand-foreground shadow-sm shadow-brand/40">
-                  <Banknote className="size-4" />
-                </span>
-                <span className="text-sm font-semibold tracking-tight">POS</span>
+                <div className="relative flex size-8 items-center justify-center overflow-hidden rounded-md bg-white shadow-sm border border-sidebar-border">
+                  <Image
+                    src="/StoreMate_White.jpg"
+                    alt="StoreMate Logo"
+                    width={32}
+                    height={32}
+                    className="size-full object-contain p-0.5"
+                  />
+                </div>
+                <span className="text-sm font-semibold tracking-tight">StoreMate</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
