@@ -1,6 +1,7 @@
 {
   "name": "simple_pos_",
   "version": "0.1.0",
+  "description": "A seamless smart point-of-sale (POS) terminal integrating IoT barcode scanners with secure, instant mobile and card payments.",
   "private": true,
   "scripts": {
     "dev": "next dev",

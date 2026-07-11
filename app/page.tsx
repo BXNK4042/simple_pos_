@@ -41,7 +41,7 @@ export default async function Home() {
                 className="animate-float object-contain object-right-bottom"
               />
             </div>
-            <div className="relative z-10 flex min-h-[200px] flex-col justify-center p-6 sm:min-h-[240px] lg:min-h-[340px]">
+            <div className="relative z-10 flex min-h-[200px] flex-col justify-center p-6 sm:min-h-[240px] lg:min-h-[340px] lg:pr-[45%]">
               <div className="mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-border/60 bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
                 <span className="size-1.5 rounded-full bg-brand" />
                 {isOwner ? "Owner workspace" : "Cashier workspace"}

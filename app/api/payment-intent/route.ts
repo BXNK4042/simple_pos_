@@ -100,6 +100,7 @@ export async function POST(request: Request) {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: toStripeAmount(total),
       currency: CURRENCY,
+      description: "Retail Store Purchase",
       automatic_payment_methods: { enabled: true },
     })
 
