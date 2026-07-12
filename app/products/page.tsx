@@ -11,7 +11,17 @@ export const metadata: Metadata = {
 export default async function ProductsPage() {
   await requireRole("owner")
   const rows = await prisma.product.findMany({
-    select: { id: true, barcode: true, name: true, price: true, stock: true },
+    select: { 
+      id: true, 
+      sku: true,
+      barcode: true, 
+      name: true, 
+      category: true,
+      price: true, 
+      costPrice: true,
+      stock: true,
+      isActive: true
+    },
     orderBy: { name: "asc" },
   })
 

@@ -88,7 +88,7 @@ export function StockInPos() {
   function handleCreated(product: NewProduct) {
     addProductToList({
       id: product.id,
-      barcode: product.barcode,
+      barcode: product.barcode ?? "",
       name: product.name,
       price: product.price,
       stock: product.stock,

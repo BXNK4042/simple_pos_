@@ -14,7 +14,7 @@ import { isOut, LOW_STOCK } from "@/lib/inventory"
 export type LowStockRow = {
   id: number
   name: string
-  barcode: string
+  barcode: string | null
   price: number
   stock: number
 }

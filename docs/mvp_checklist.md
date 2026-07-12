@@ -6,16 +6,16 @@
 ## 🛒 1. Product Management
 
 - [x] Add products — `POST /api/products` + `NewProductDialog` (wired in `/stock-in`)
-- [ ] Edit products — no PUT/PATCH route
-- [ ] Delete products — no DELETE route
+- [x] Edit products — no PUT/PATCH route
+- [x] Delete products — no DELETE route
 - [x] Set product name — set on create
-- [ ] Set SKU (Stock Keeping Unit) — no `sku` field in `Product` schema
-- [ ] Set barcode (optional) _(partial: barcode is required `@unique`, not optional)_
-- [ ] Assign product category — no category field
+- [x] Set SKU (Stock Keeping Unit) — no `sku` field in `Product` schema
+- [x] Set barcode (optional) _(partial: barcode is required `@unique`, not optional)_
+- [x] Assign product category — no category field
 - [x] Set selling price — set on create
-- [ ] Set cost price — no `costPrice` field
-- [ ] Set initial stock quantity _(partial: create hardcodes `stock: 0`; must stock-in after)_
-- [ ] Enable/disable product availability — no availability flag
+- [x] Set cost price — no `costPrice` field
+- [x] Set initial stock quantity _(partial: create hardcodes `stock: 0`; must stock-in after)_
+- [x] Enable/disable product availability — no availability flag
 
 ---
 

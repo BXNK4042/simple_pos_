@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { toast } from "sonner"
-import { Loader2, PackagePlus } from "lucide-react"
+import { Loader2, Save } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 
-export type NewProduct = {
+export type EditProduct = {
   id: number
   sku: string | null
   barcode: string | null
@@ -27,48 +27,55 @@ export type NewProduct = {
   isActive: boolean
 }
 
-type NewProductDialogProps = {
-  barcode?: string
+type EditProductDialogProps = {
+  product: EditProduct | null
   open: boolean
   onOpenChange: (open: boolean) => void
-  /** Called with the freshly created product; the parent adds it to the list. */
-  onCreated: (product: NewProduct) => void
+  /** Called with the freshly updated product; the parent updates it in the list. */
+  onUpdated: (product: EditProduct) => void
 }
 
-export function NewProductDialog({
-  barcode = "",
+export function EditProductDialog({
+  product,
   open,
   onOpenChange,
-  onCreated,
-}: NewProductDialogProps) {
+  onUpdated,
+}: EditProductDialogProps) {
   const [sku, setSku] = useState("")
-  const [localBarcode, setLocalBarcode] = useState(barcode)
+  const [localBarcode, setLocalBarcode] = useState("")
   const [name, setName] = useState("")
   const [category, setCategory] = useState("")
   const [price, setPrice] = useState("")
   const [costPrice, setCostPrice] = useState("0")
-  const [initialStock, setInitialStock] = useState("0")
   const [isActive, setIsActive] = useState(true)
   const [submitting, setSubmitting] = useState(false)
 
-  function reset() {
-    setSku("")
-    setLocalBarcode(barcode)
-    setName("")
-    setCategory("")
-    setPrice("")
-    setCostPrice("0")
-    setInitialStock("0")
-    setIsActive(true)
-  }
+  useEffect(() => {
+    if (product && open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSku(product.sku ?? "")
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLocalBarcode(product.barcode ?? "")
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setName(product.name)
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCategory(product.category ?? "")
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPrice(product.price.toString())
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCostPrice(product.costPrice.toString())
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsActive(product.isActive)
+    }
+  }, [product, open])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (submitting) return
+    if (submitting || !product) return
     setSubmitting(true)
     try {
-      const res = await fetch("/api/products", {
-        method: "POST",
+      const res = await fetch(`/api/products/${product.id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           sku: sku.trim() || undefined,
@@ -77,20 +84,20 @@ export function NewProductDialog({
           category: category.trim() || undefined,
           price: Number(price),
           costPrice: Number(costPrice),
-          initialStock: Number(initialStock),
           isActive,
         }),
       })
-      const data = (await res.json()) as Partial<NewProduct> & {
+      const data = (await res.json()) as Partial<EditProduct> & {
         status?: string
         message?: string
       }
       if (!res.ok || data.status !== "ok" || typeof data.id !== "number") {
-        toast.error(data.message ?? "Could not create product")
+        toast.error(data.message ?? "Could not update product")
         return
       }
-      toast.success(`Created "${data.name}"`)
-      onCreated({
+      toast.success(`Updated "${data.name}"`)
+      onUpdated({
+        ...product,
         id: data.id,
         sku: data.sku ?? sku.trim() ?? null,
         barcode: data.barcode ?? localBarcode.trim() ?? null,
@@ -98,10 +105,8 @@ export function NewProductDialog({
         category: data.category ?? category.trim() ?? null,
         price: data.price ?? Number(price),
         costPrice: data.costPrice ?? Number(costPrice),
-        stock: data.stock ?? Number(initialStock),
         isActive: data.isActive ?? isActive,
       })
-      reset()
       onOpenChange(false)
     } catch {
       toast.error("Network error")
@@ -111,28 +116,22 @@ export function NewProductDialog({
   }
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(next) => {
-        if (!next) reset()
-        onOpenChange(next)
-      }}
-    >
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>New product</DialogTitle>
+          <DialogTitle>Edit product</DialogTitle>
           <DialogDescription>
-            Add a new product to the catalog.
+            Update product details.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label htmlFor="np-barcode" className="text-sm font-medium">
+            <label htmlFor="ep-barcode" className="text-sm font-medium">
               Barcode (Optional)
             </label>
             <Input 
-              id="np-barcode" 
+              id="ep-barcode" 
               value={localBarcode} 
               onChange={(e) => setLocalBarcode(e.target.value)}
               className="font-mono" 
@@ -141,11 +140,11 @@ export function NewProductDialog({
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="np-sku" className="text-sm font-medium">
+            <label htmlFor="ep-sku" className="text-sm font-medium">
               SKU (Optional)
             </label>
             <Input 
-              id="np-sku" 
+              id="ep-sku" 
               value={sku} 
               onChange={(e) => setSku(e.target.value)}
               className="font-mono" 
@@ -154,11 +153,11 @@ export function NewProductDialog({
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="np-name" className="text-sm font-medium">
+            <label htmlFor="ep-name" className="text-sm font-medium">
               Name
             </label>
             <Input
-              id="np-name"
+              id="ep-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Singha Water 600ml"
@@ -169,11 +168,11 @@ export function NewProductDialog({
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="np-category" className="text-sm font-medium">
+            <label htmlFor="ep-category" className="text-sm font-medium">
               Category (Optional)
             </label>
             <Input
-              id="np-category"
+              id="ep-category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               placeholder="e.g. Beverages"
@@ -182,11 +181,11 @@ export function NewProductDialog({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label htmlFor="np-price" className="text-sm font-medium">
+              <label htmlFor="ep-price" className="text-sm font-medium">
                 Selling Price (THB)
               </label>
               <Input
-                id="np-price"
+                id="ep-price"
                 type="number"
                 inputMode="decimal"
                 min={0}
@@ -199,11 +198,11 @@ export function NewProductDialog({
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="np-cost" className="text-sm font-medium">
+              <label htmlFor="ep-cost" className="text-sm font-medium">
                 Cost Price (THB)
               </label>
               <Input
-                id="np-cost"
+                id="ep-cost"
                 type="number"
                 inputMode="decimal"
                 min={0}
@@ -215,36 +214,21 @@ export function NewProductDialog({
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <label htmlFor="np-stock" className="text-sm font-medium">
-              Initial Stock
-            </label>
-            <Input
-              id="np-stock"
-              type="number"
-              inputMode="numeric"
-              min={0}
-              step="1"
-              value={initialStock}
-              onChange={(e) => setInitialStock(e.target.value)}
-            />
-          </div>
-
           <div className="flex items-center space-x-2 pt-2">
             <Switch 
-              id="np-active" 
+              id="ep-active" 
               checked={isActive} 
               onCheckedChange={setIsActive} 
             />
-            <label htmlFor="np-active" className="text-sm font-medium cursor-pointer">
+            <label htmlFor="ep-active" className="text-sm font-medium cursor-pointer">
               Active (Available for sale)
             </label>
           </div>
 
           <DialogFooter className="pt-2">
             <Button type="submit" disabled={submitting || name.trim().length < 2}>
-              {submitting ? <Loader2 className="animate-spin" /> : <PackagePlus />}
-              {submitting ? "Creating…" : "Create Product"}
+              {submitting ? <Loader2 className="animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+              {submitting ? "Saving…" : "Save Changes"}
             </Button>
           </DialogFooter>
         </form>

@@ -9,12 +9,16 @@ datasource db {
 }
 
 model Product {
-  id      Int               @id @default(autoincrement())
-  barcode String            @unique
-  name    String
-  price   Float
-  stock   Int               @default(0)
-  items   TransactionItem[]
+  id        Int               @id @default(autoincrement())
+  sku       String?
+  barcode   String?           @unique
+  name      String
+  category  String?
+  price     Float
+  costPrice Float             @default(0)
+  stock     Int               @default(0)
+  isActive  Boolean           @default(true)
+  items     TransactionItem[]
 }
 
 model User {

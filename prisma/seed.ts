@@ -99,7 +99,7 @@ async function main() {
   }
 
   const all = await prisma.product.findMany()
-  const byBarcode = new Map<string, Product>(all.map((p: Product) => [p.barcode, p]))
+  const byBarcode = new Map<string, Product>(all.filter(p => p.barcode).map((p: Product) => [p.barcode as string, p]))
 
   const existing = await prisma.transaction.findMany({
     where: { stripePaymentId: { in: transactions.map((t) => seedTag(t.id)) } },

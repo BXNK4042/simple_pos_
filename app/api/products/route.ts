@@ -8,27 +8,39 @@ const CURRENCY = (process.env.NEXT_PUBLIC_CURRENCY ?? "thb").toUpperCase()
 type ProductResponse = {
   status: "ok"
   id: number
-  barcode: string
+  sku: string | null
+  barcode: string | null
   name: string
+  category: string | null
   price: number
+  costPrice: number
   stock: number
+  isActive: boolean
   currency: string
 }
 
 function toResponse(row: {
   id: number
-  barcode: string
+  sku: string | null
+  barcode: string | null
   name: string
+  category: string | null
   price: number
+  costPrice: number
   stock: number
+  isActive: boolean
 }): ProductResponse {
   return {
     status: "ok",
     id: row.id,
+    sku: row.sku,
     barcode: row.barcode,
     name: row.name,
+    category: row.category,
     price: row.price,
+    costPrice: row.costPrice,
     stock: row.stock,
+    isActive: row.isActive,
     currency: CURRENCY,
   }
 }
@@ -58,7 +70,17 @@ export async function GET(request: Request) {
       },
       take: 8,
       orderBy: { name: "asc" },
-      select: { id: true, barcode: true, name: true, price: true, stock: true },
+      select: { 
+        id: true, 
+        sku: true,
+        barcode: true, 
+        name: true, 
+        category: true,
+        price: true, 
+        costPrice: true,
+        stock: true,
+        isActive: true
+      },
     })
     return Response.json({ status: "ok", items })
   }
@@ -101,11 +123,20 @@ export async function POST(request: Request) {
     return Response.json({ status: "error", message: firstError }, { status: 400 })
   }
 
-  const { barcode, name, price } = parsed.data
+  const { sku, barcode, name, category, price, costPrice, isActive, initialStock } = parsed.data
 
   try {
     const product = await prisma.product.create({
-      data: { barcode, name, price, stock: 0 },
+      data: { 
+        sku: sku || null,
+        barcode: barcode || null, 
+        name, 
+        category: category || null,
+        price, 
+        costPrice,
+        isActive,
+        stock: initialStock 
+      },
     })
     return Response.json(toResponse(product), { status: 201 })
   } catch (error) {

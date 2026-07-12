@@ -53,7 +53,7 @@ export async function POST(request: Request) {
 
     const scan: ScanResult = {
       id: product.id,
-      barcode: product.barcode,
+      barcode: product.barcode ?? "",
       product: product.name,
       price: product.price,
       stock: product.stock,
