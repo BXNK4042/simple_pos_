@@ -1,14 +1,9 @@
 export type ScanResult = {
-  barcode_status: "ok"
   id: number
   barcode: string
   product: string
   price: number
   stock: number
-  currency: string
-} | {
-  barcode_status: "unknown",
-  barcode: string
   currency: string
 }
 
