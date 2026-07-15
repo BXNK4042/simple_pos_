@@ -7,9 +7,18 @@ import { CreditCard, Trash2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 import { Cart } from "@/components/cart"
 import { ProductSearch, type ProductSearchHit } from "@/components/product-search"
+import { NewProductDialog, type NewProduct } from "@/components/new-product-dialog"
 import { PageContainer } from "@/components/page-container"
 import { cn } from "@/lib/utils"
 import { formatTHB } from "@/lib/format"
@@ -28,6 +37,8 @@ export function CashierPos() {
   const cart = useCart()
   const [loading, setLoading] = useState(false)
   const [scanner, setScanner] = useState<"connecting" | "live" | "offline">("connecting")
+  const [unknownBarcode, setUnknownBarcode] = useState<string | null>(null)
+  const [registerOpen, setRegisterOpen] = useState(false)
 
   const addItemRef = useRef(cart.addItem)
   useEffect(() => {
@@ -41,6 +52,10 @@ export function CashierPos() {
     es.onmessage = (event) => {
       try {
         const scan = JSON.parse(event.data) as ScanResult
+        if (scan.status === "unknown") {
+          setUnknownBarcode(scan.barcode)
+          return
+        }
         notify(addItemRef.current(scan), scan.product)
       } catch {
         // ignore malformed payloads
@@ -59,9 +74,13 @@ export function CashierPos() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ barcode: code }),
       })
-      const data = (await res.json()) as ScanResult & { status?: string; message?: string }
-      if (!res.ok || data.status !== "ok") {
-        toast.error(data.message ?? "Scan failed")
+      const data = (await res.json()) as ScanResult | { status: "error"; message?: string }
+      if (!res.ok || data.status === "error") {
+        toast.error("message" in data ? data.message ?? "Scan failed" : "Scan failed")
+        return
+      }
+      if (data.status === "unknown") {
+        setUnknownBarcode(code)
         return
       }
       notify(cart.addItem(data), data.product)
@@ -72,8 +91,22 @@ export function CashierPos() {
     }
   }
 
+  function handleCreated(p: NewProduct) {
+    const scan: ScanResult = {
+      status: "ok",
+      id: p.id,
+      barcode: p.barcode ?? "",
+      product: p.name,
+      price: p.price,
+      stock: p.stock,
+      currency: CURRENCY,
+    }
+    notify(cart.addItem(scan), p.name)
+  }
+
   function handleSelectProduct(p: ProductSearchHit) {
     const scan: ScanResult = {
+      status: "ok",
       id: p.id,
       barcode: p.barcode,
       product: p.name,
@@ -179,6 +212,45 @@ export function CashierPos() {
           </Card>
         </aside>
       </div>
+
+      <Dialog
+        open={unknownBarcode !== null && !registerOpen}
+        onOpenChange={(next) => {
+          if (!next) setUnknownBarcode(null)
+        }}
+      >
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Product not found</DialogTitle>
+            <DialogDescription>
+              Barcode{" "}
+              <span className="font-mono font-medium text-foreground">
+                {unknownBarcode}
+              </span>{" "}
+              is not in the catalog. Register it now?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="ghost" onClick={() => setUnknownBarcode(null)}>
+              Cancel
+            </Button>
+            <Button variant="accent" onClick={() => setRegisterOpen(true)}>
+              Register
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <NewProductDialog
+        key={unknownBarcode ?? "none"}
+        barcode={unknownBarcode ?? ""}
+        open={registerOpen}
+        onOpenChange={(next) => {
+          setRegisterOpen(next)
+          if (!next) setUnknownBarcode(null)
+        }}
+        onCreated={handleCreated}
+      />
     </PageContainer>
   )
 }

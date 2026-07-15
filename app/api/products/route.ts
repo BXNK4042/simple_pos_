@@ -1,6 +1,6 @@
 import { Prisma } from "@/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
-import { requireOwnerResponse, requireSessionResponse } from "@/lib/auth"
+import { requireSessionResponse } from "@/lib/auth"
 import { productCreateSchema } from "@/lib/schemas"
 
 const CURRENCY = (process.env.NEXT_PUBLIC_CURRENCY ?? "thb").toUpperCase()
@@ -100,11 +100,12 @@ export async function GET(request: Request) {
 }
 
 /**
- * POST /api/products — owner-only. Creates a new product. Rejects duplicate
- * barcodes (P2002 -> 409).
+ * POST /api/products — session-scoped (any logged-in user). Creates a new
+ * product. Rejects duplicate barcodes (P2002 -> 409). Cashiers create via the
+ * unknown-barcode flow on the cashier screen.
  */
 export async function POST(request: Request) {
-  const auth = await requireOwnerResponse()
+  const auth = await requireSessionResponse()
   if (auth instanceof Response) return auth
 
   let body: unknown

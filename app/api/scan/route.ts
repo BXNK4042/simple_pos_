@@ -38,20 +38,21 @@ export async function POST(request: Request) {
   const deviceId = record.device_id === undefined ? "" : String(record.device_id).trim()
 
   try {
-    let product = await prisma.product.findUnique({ where: { barcode } })
+    const product = await prisma.product.findUnique({ where: { barcode } })
 
     if (!product) {
-      product = await prisma.product.create({
-        data: {
-          barcode,
-          name: `Unknown ${barcode}`,
-          price: 0,
-          stock: 0,
-        },
-      })
+      const scan: ScanResult = {
+        status: "unknown",
+        id: 0,
+        barcode,
+        currency: CURRENCY,
+      }
+      if (deviceId) emitScan(scan)
+      return Response.json(scan)
     }
 
     const scan: ScanResult = {
+      status: "ok",
       id: product.id,
       barcode: product.barcode ?? "",
       product: product.name,
@@ -66,7 +67,7 @@ export async function POST(request: Request) {
       emitScan(scan)
     }
 
-    return Response.json({ status: "ok", ...scan })
+    return Response.json(scan)
   } catch (error) {
     console.error("/api/scan error:", error)
     return Response.json(

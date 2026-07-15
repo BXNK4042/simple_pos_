@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useReducer, useRef } from "react"
-import type { ScanResult } from "@/lib/scan-events"
+import type { ResolvedScan } from "@/lib/scan-events"
 
 export type CartItem = {
   id: number
@@ -56,7 +56,7 @@ function readStorage(): CartItem[] {
   }
 }
 
-function toCartItem(scan: ScanResult): CartItem {
+function toCartItem(scan: ResolvedScan): CartItem {
   return {
     id: scan.id,
     barcode: scan.barcode,
@@ -89,7 +89,7 @@ export function useCart() {
   }, [])
 
   const addItem = useCallback(
-    (scan: ScanResult): AddStatus => {
+    (scan: ResolvedScan): AddStatus => {
       const existing = items.find((i) => i.id === scan.id)
       if (existing) {
         if (scan.stock > 0 && existing.quantity >= scan.stock) return "capped"

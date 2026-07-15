@@ -1,11 +1,22 @@
-export type ScanResult = {
-  id: number
-  barcode: string
-  product: string
-  price: number
-  stock: number
-  currency: string
-}
+export type ScanResult =
+  | {
+      status: "ok"
+      id: number
+      barcode: string
+      product: string
+      price: number
+      stock: number
+      currency: string
+    }
+  | {
+      status: "unknown"
+      id: number
+      barcode: string
+      currency: string
+    }
+
+/** A known product that can be added to the cart. */
+export type ResolvedScan = Extract<ScanResult, { status: "ok" }>
 
 type Listener = (scan: ScanResult) => void
 
