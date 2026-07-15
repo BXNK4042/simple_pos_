@@ -18,10 +18,11 @@ function PaymentForm({ transactionId }: { transactionId: number }) {
   const elements = useElements()
   const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
+  const [elementReady, setElementReady] = useState(false)
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
-    if (!stripe || !elements) return
+    if (!stripe || !elements || !elementReady) return
 
     setSubmitting(true)
     const result = await stripe.confirmPayment({
@@ -53,8 +54,14 @@ function PaymentForm({ transactionId }: { transactionId: number }) {
       <PaymentElement
         options={{ layout: "tabs" }}
         className="rounded-lg border p-3"
+        onReady={() => setElementReady(true)}
       />
-      <Button type="submit" className="w-full" size="lg" disabled={!stripe || submitting}>
+      <Button
+        type="submit"
+        className="w-full"
+        size="lg"
+        disabled={!stripe || !elementReady || submitting}
+      >
         {submitting ? <Loader2 className="animate-spin" /> : <CreditCard />}
         {submitting ? "Processing…" : "Pay now"}
       </Button>
