@@ -30,7 +30,10 @@ export async function GET(request: Request) {
       createdAt: true,
       status: true,
       total: true,
+      paymentMethod: true,
+      amountTendered: true,
       stripePaymentId: true,
+      cashier: { select: { name: true } },
       items: { select: { quantity: true, product: { select: { name: true } } } },
     },
   })

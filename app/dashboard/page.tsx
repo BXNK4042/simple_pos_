@@ -6,10 +6,11 @@ import { DashboardKpis, type Kpi } from "@/components/dashboard/kpis"
 import { RevenueChart } from "@/components/dashboard/revenue-chart"
 import { TopProducts } from "@/components/dashboard/top-products"
 import { LowStockTable } from "@/components/dashboard/low-stock-table"
+import { DashboardRangeForm } from "@/components/dashboard/range-form"
 import { PageContainer } from "@/components/page-container"
 import { formatTHB } from "@/lib/format"
 import { requireRole } from "@/lib/auth"
-import { getDashboardStats } from "@/lib/stats"
+import { getDashboardStats, parseDay } from "@/lib/stats"
 
 export const metadata: Metadata = {
   title: "Dashboard | POS System",
@@ -18,20 +19,44 @@ export const metadata: Metadata = {
 // Live sales/stock data — never serve a build-time snapshot.
 export const dynamic = "force-dynamic"
 
-export default async function DashboardPage() {
+function toInputValue(d: Date): string {
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, "0")
+  const day = String(d.getDate()).padStart(2, "0")
+  return `${y}-${m}-${day}`
+}
+
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ from?: string; to?: string }>
+}) {
   await requireRole("owner")
-  const stats = await getDashboardStats()
+  const sp = await searchParams
+  const from = parseDay(sp.from)
+  const to = parseDay(sp.to)
+  const hasRange = from !== null
+  const stats = await getDashboardStats({
+    from: from ?? undefined,
+    to: to ?? undefined,
+  })
+
+  const rangeLabel = hasRange
+    ? to
+      ? `${toInputValue(from!)} → ${toInputValue(to)}`
+      : toInputValue(from!)
+    : "Today"
 
   const kpis: Kpi[] = [
     {
-      label: "Today's revenue",
+      label: hasRange ? "Range revenue" : "Today's revenue",
       value: formatTHB(stats.todaysRevenue),
-      hint: `${stats.todaysOrderCount} order${stats.todaysOrderCount === 1 ? "" : "s"} today`,
+      hint: `${stats.todaysOrderCount} order${stats.todaysOrderCount === 1 ? "" : "s"} · ${rangeLabel}`,
       icon: Banknote,
       featured: true,
     },
     {
-      label: "Items sold today",
+      label: hasRange ? "Items sold (range)" : "Items sold today",
       value: String(stats.todaysItems),
       icon: ShoppingCart,
     },
@@ -55,8 +80,12 @@ export default async function DashboardPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Sales and stock overview.
+          Sales and stock overview — {rangeLabel}.
         </p>
+      </div>
+
+      <div className="mt-6">
+        <DashboardRangeForm initialFrom={sp.from} initialTo={sp.to} />
       </div>
 
       <div className="mt-6">

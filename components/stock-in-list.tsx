@@ -16,6 +16,7 @@ import type { StockInItem } from "@/lib/stock-in"
 
 type StockInListProps = {
   items: StockInItem[]
+  mode?: "in" | "out"
   onInc: (id: number) => void
   onDec: (id: number) => void
   onSetQty: (id: number, qty: number) => void
@@ -24,11 +25,16 @@ type StockInListProps = {
 
 export function StockInList({
   items,
+  mode = "in",
   onInc,
   onDec,
   onSetQty,
   onRemove,
 }: StockInListProps) {
+  const isOut = mode === "out"
+  const projected = (item: StockInItem) =>
+    isOut ? Math.max(0, item.currentStock - item.quantity) : item.currentStock + item.quantity
+
   if (items.length === 0) {
     return (
       <div className="flex h-40 items-center justify-center rounded-lg border border-dashed text-sm text-muted-foreground">
@@ -45,7 +51,7 @@ export function StockInList({
             <TableHead>Product</TableHead>
             <TableHead className="text-right">Price</TableHead>
             <TableHead className="text-center">Stock now → after</TableHead>
-            <TableHead className="text-center">Add qty</TableHead>
+            <TableHead className="text-center">{isOut ? "Remove qty" : "Add qty"}</TableHead>
             <TableHead className="w-10" />
           </TableRow>
         </TableHeader>
@@ -60,7 +66,7 @@ export function StockInList({
                 {formatTHB(item.price)}
               </TableCell>
               <TableCell className="text-center tabular-nums text-muted-foreground">
-                {item.currentStock} → {item.currentStock + item.quantity}
+                {item.currentStock} → {projected(item)}
               </TableCell>
               <TableCell>
                 <div className="flex items-center justify-center gap-1">

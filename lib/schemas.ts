@@ -64,6 +64,13 @@ export const stockInSchema = z.object({
   items: z.array(stockInItemSchema).min(1, { error: "Add at least one item." }),
 })
 
+export const payCashSchema = z.object({
+  items: z.array(stockInItemSchema).min(1, { error: "Cart is empty." }),
+  tendered: z.coerce
+    .number()
+    .nonnegative({ error: "Cash tendered cannot be negative." }),
+})
+
 export type FormState =
   | {
       errors?: Record<string, string[]>

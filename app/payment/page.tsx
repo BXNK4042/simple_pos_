@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { ArrowLeft, CreditCard, Loader2 } from "lucide-react"
+import { ArrowLeft, Banknote, CreditCard, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -13,6 +13,7 @@ import { useHydrated } from "@/hooks/use-hydrated"
 import { formatTHB } from "@/lib/format"
 import { useCart } from "@/lib/cart"
 import { CheckoutForm } from "@/components/checkout-form"
+import { CashTenderedDialog } from "@/components/cash-tendered-dialog"
 import { PageContainer } from "@/components/page-container"
 
 type PendingPayment = {
@@ -26,6 +27,7 @@ export default function PaymentPage() {
   const router = useRouter()
   const [pending, setPending] = useState<PendingPayment | null>(null)
   const [creating, setCreating] = useState(false)
+  const [cashOpen, setCashOpen] = useState(false)
 
   async function startPayment() {
     if (creating || cart.count === 0) return
@@ -128,17 +130,27 @@ export default function PaymentPage() {
             </CardFooter>
           ) : (
             <CardFooter className="flex flex-col items-stretch gap-2">
-              <Button
-                variant="accent"
-                className="w-full"
-                size="lg"
-                onClick={startPayment}
-                disabled={creating || cart.count === 0}
-              >
-                {creating ? <Loader2 className="animate-spin" /> : <CreditCard />}
-                {creating ? "Starting…" : "Pay now"}
-              </Button>
-              <Button asChild variant="outline">
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  variant="accent"
+                  size="lg"
+                  onClick={startPayment}
+                  disabled={creating || cart.count === 0}
+                >
+                  {creating ? <Loader2 className="animate-spin" /> : <CreditCard />}
+                  {creating ? "Starting…" : "Card"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => setCashOpen(true)}
+                  disabled={creating || cart.count === 0}
+                >
+                  <Banknote />
+                  Cash
+                </Button>
+              </div>
+              <Button asChild variant="ghost">
                 <Link href="/cashier">
                   <ArrowLeft />
                   Back to cashier
@@ -148,6 +160,13 @@ export default function PaymentPage() {
           )}
         </Card>
       )}
+
+      <CashTenderedDialog
+        key={cashOpen ? "cash-open" : "cash-closed"}
+        open={cashOpen}
+        onOpenChange={setCashOpen}
+        total={cart.total}
+      />
     </PageContainer>
   )
 }

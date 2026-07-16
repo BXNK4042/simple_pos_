@@ -2,16 +2,19 @@
 
 import { useState } from "react"
 import { toast } from "sonner"
-import { Loader2, PackagePlus, Trash2 } from "lucide-react"
+import { Loader2, PackageMinus, PackagePlus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ProductSearch, type ProductSearchHit } from "@/components/product-search"
 import { StockInList } from "@/components/stock-in-list"
 import { NewProductDialog, type NewProduct } from "@/components/new-product-dialog"
 import { PageContainer } from "@/components/page-container"
 import { useHydrated } from "@/hooks/use-hydrated"
 import { useStockIn, type StockInItem } from "@/lib/stock-in"
+
+type Mode = "in" | "out"
 
 type ProductResponse = {
   status?: string
@@ -29,6 +32,8 @@ export function StockInPos() {
   const [loading, setLoading] = useState(false)
   const [applying, setApplying] = useState(false)
   const [pendingBarcode, setPendingBarcode] = useState<string | null>(null)
+  const [mode, setMode] = useState<Mode>("in")
+  const isOut = mode === "out"
 
   function addProductToList(p: { id: number; barcode: string; name: string; price: number; stock: number }) {
     const item: StockInItem = {
@@ -99,7 +104,8 @@ export function StockInPos() {
     if (applying || list.items.length === 0) return
     setApplying(true)
     try {
-      const res = await fetch("/api/stock-in", {
+      const endpoint = isOut ? "/api/stock-out" : "/api/stock-in"
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -108,10 +114,14 @@ export function StockInPos() {
       })
       const data = (await res.json()) as { status?: string; message?: string; updated?: number }
       if (!res.ok || data.status !== "ok") {
-        toast.error(data.message ?? "Could not apply stock-in")
+        toast.error(data.message ?? `Could not apply stock-${mode}`)
         return
       }
-      toast.success(`Stocked in ${list.count} unit(s) across ${list.distinct} product(s)`)
+      toast.success(
+        isOut
+          ? `Removed ${list.count} unit(s) across ${list.distinct} product(s)`
+          : `Stocked in ${list.count} unit(s) across ${list.distinct} product(s)`
+      )
       list.clear()
     } catch {
       toast.error("Network error")
@@ -123,11 +133,20 @@ export function StockInPos() {
   return (
     <PageContainer>
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Stock-in</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Inventory moves</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Scan or type a barcode to add stock. New barcodes open a create dialog.
+          Scan or type a barcode to add or remove stock. New barcodes open a create dialog.
         </p>
       </header>
+
+      <div className="mb-6">
+        <Tabs value={mode} onValueChange={(v) => setMode(v as Mode)}>
+          <TabsList>
+            <TabsTrigger value="in">Stock in</TabsTrigger>
+            <TabsTrigger value="out">Stock out</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
 
       <div className="mb-6">
         <ProductSearch
@@ -149,6 +168,7 @@ export function StockInPos() {
           ) : (
             <StockInList
               items={list.items}
+              mode={mode}
               onInc={list.inc}
               onDec={list.dec}
               onSetQty={list.setQty}
@@ -160,7 +180,7 @@ export function StockInPos() {
         <aside className="lg:col-span-1">
           <Card className="sticky top-20 shadow-sm shadow-primary/5">
             <CardHeader>
-              <CardTitle>Restock summary</CardTitle>
+              <CardTitle>{isOut ? "Stock-out summary" : "Restock summary"}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               <div className="flex justify-between">
@@ -168,20 +188,26 @@ export function StockInPos() {
                 <span className="tabular-nums">{list.distinct}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Units to add</span>
+                <span className="text-muted-foreground">
+                  Units to {isOut ? "remove" : "add"}
+                </span>
                 <span className="tabular-nums">{list.count}</span>
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-2">
               <Button
-                variant="accent"
+                variant={isOut ? "destructive" : "accent"}
                 className="w-full"
                 size="lg"
                 onClick={handleApply}
                 disabled={!hydrated || applying || list.items.length === 0}
               >
-                {applying ? <Loader2 className="animate-spin" /> : <PackagePlus />}
-                {applying ? "Applying…" : "Apply stock-in"}
+                {applying ? <Loader2 className="animate-spin" /> : isOut ? <PackageMinus /> : <PackagePlus />}
+                {applying
+                  ? "Applying…"
+                  : isOut
+                    ? "Apply stock-out"
+                    : "Apply stock-in"}
               </Button>
               <Button
                 className="w-full"

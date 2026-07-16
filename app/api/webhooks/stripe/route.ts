@@ -1,6 +1,7 @@
 import type Stripe from "stripe"
 import { prisma } from "@/lib/prisma"
 import { stripe } from "@/lib/stripe"
+import { decrementStock } from "@/lib/stock"
 
 /**
  * Stripe webhook — the source of truth for payment status.
@@ -81,18 +82,12 @@ async function handleSucceeded(pi: Stripe.PaymentIntent) {
     })
 
     // Decrement stock for each line item, clamped at 0 (a stock snapshot may
-    // have drifted between scan and webhook; never go negative).
-    for (const item of transaction.items) {
-      await tx.product.updateMany({
-        where: { id: item.productId },
-        data: { stock: { decrement: item.quantity } },
-      })
-      // Clamp any row that dropped below 0 back to 0.
-      await tx.product.updateMany({
-        where: { id: item.productId, stock: { lt: 0 } },
-        data: { stock: 0 },
-      })
-    }
+    // have drifted between scan and webhook; never go negative). Shared with
+    // the cash-payment path via lib/stock.ts so both finalisers match.
+    await decrementStock(
+      tx,
+      transaction.items.map((i) => ({ productId: i.productId, quantity: i.quantity }))
+    )
   })
 }
 

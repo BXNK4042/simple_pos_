@@ -21,7 +21,10 @@ export async function GET(request: Request) {
       id: true,
       status: true,
       total: true,
+      paymentMethod: true,
+      amountTendered: true,
       createdAt: true,
+      cashier: { select: { name: true } },
       items: {
         select: {
           quantity: true,

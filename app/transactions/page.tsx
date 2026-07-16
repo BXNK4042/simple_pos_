@@ -45,6 +45,8 @@ export default async function TransactionsPage({
         createdAt: true,
         status: true,
         total: true,
+        paymentMethod: true,
+        cashier: { select: { name: true } },
         items: { select: { quantity: true } },
       },
     }),
@@ -57,10 +59,12 @@ export default async function TransactionsPage({
     status: r.status as TransactionRow["status"],
     total: r.total,
     itemCount: r.items.reduce((sum, i) => sum + i.quantity, 0),
+    paymentMethod: r.paymentMethod,
+    cashierName: r.cashier?.name ?? null,
   }))
 
   const pages = totalPages(total)
-  const hasAnyTransactions = total > 0 || query.q !== "" || query.status !== "all"
+  const hasAnyTransactions = total > 0 || query.q !== "" || query.status !== "all" || query.from !== "" || query.to !== ""
   const emptyMessage = !hasAnyTransactions
     ? "No transactions yet — sales will appear here after the first payment."
     : "No transactions match these filters."

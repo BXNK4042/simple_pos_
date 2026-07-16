@@ -32,6 +32,12 @@ export function TransactionsFilters({ current, total }: FiltersProps) {
     router.push(buildHref(current, { q: trimmed }, { resetPage: true }))
   }
 
+  function applyRange(formData: FormData) {
+    const from = String(formData.get("from") ?? "").trim()
+    const to = String(formData.get("to") ?? "").trim()
+    router.push(buildHref(current, { from, to }, { resetPage: true }))
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -50,15 +56,38 @@ export function TransactionsFilters({ current, total }: FiltersProps) {
         </span>
       </div>
 
-      <Tabs value={current.status} onValueChange={(v) => applyStatus(v as StatusFilter)}>
-        <TabsList>
-          {STATUS_OPTIONS.map((opt) => (
-            <TabsTrigger key={opt.value} value={opt.value}>
-              {opt.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <Tabs value={current.status} onValueChange={(v) => applyStatus(v as StatusFilter)}>
+          <TabsList>
+            {STATUS_OPTIONS.map((opt) => (
+              <TabsTrigger key={opt.value} value={opt.value}>
+                {opt.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+
+        <form action={applyRange} className="flex items-end gap-2">
+          <label className="flex flex-col gap-1 text-xs text-muted-foreground">
+            From
+            <Input
+              type="date"
+              name="from"
+              defaultValue={current.from}
+              className="h-9 w-38"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-xs text-muted-foreground">
+            To
+            <Input
+              type="date"
+              name="to"
+              defaultValue={current.to}
+              className="h-9 w-38"
+            />
+          </label>
+        </form>
+      </div>
     </div>
   )
 }

@@ -24,6 +24,8 @@ export type TransactionRow = {
   status: TxnStatus
   total: number
   itemCount: number
+  paymentMethod: string
+  cashierName: string | null
 }
 
 type Column = { key: SortKey; label: string }
@@ -79,7 +81,9 @@ export function TransactionsTable({ rows, current, emptyMessage }: TransactionsT
                 <SortLink col={col}>{col.label}</SortLink>
               </TableHead>
             ))}
+            <TableHead className="text-center">Method</TableHead>
             <TableHead className="text-center">Items</TableHead>
+            <TableHead className="text-center">Cashier</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -104,8 +108,14 @@ export function TransactionsTable({ rows, current, emptyMessage }: TransactionsT
                   {row.status}
                 </Badge>
               </TableCell>
+              <TableCell className="text-center capitalize text-muted-foreground">
+                {row.paymentMethod}
+              </TableCell>
               <TableCell className="text-center tabular-nums text-muted-foreground">
                 {row.itemCount}
+              </TableCell>
+              <TableCell className="text-center text-muted-foreground">
+                {row.cashierName ?? "—"}
               </TableCell>
             </TableRow>
           ))}

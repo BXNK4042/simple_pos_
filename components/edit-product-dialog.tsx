@@ -54,17 +54,17 @@ export function EditProductDialog({
     if (product && open) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setSku(product.sku ?? "")
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setLocalBarcode(product.barcode ?? "")
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setName(product.name)
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setCategory(product.category ?? "")
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setPrice(product.price.toString())
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setCostPrice(product.costPrice.toString())
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setIsActive(product.isActive)
     }
   }, [product, open])

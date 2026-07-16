@@ -236,3 +236,39 @@
     scroll-behavior: auto !important;
   }
 }
+
+/*
+ * Print styles — receipts. Anything tagged .no-print (site chrome, buttons,
+ * navigation) is hidden; the .print-receipt block is isolated on its own
+ * page so window.print() (and the browser's "Save as PDF" target) produces a
+ * clean receipt with no app UI. Use the Tailwind `print:` variant for
+ * per-element tweaks; this block handles the global resets.
+ */
+@media print {
+  html,
+  body {
+    background: #fff !important;
+  }
+  body::before {
+    /* drop the grain overlay and the navy glow when printing */
+    display: none !important;
+  }
+  body > * {
+    /* lift the z-index/positioning constraints from the base layer */
+    all: unset;
+    display: block;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-receipt {
+    display: block !important;
+  }
+  /* Hide everything that is not the receipt by default, then re-show it. */
+  body > *:not(.print-receipt) {
+    display: none !important;
+  }
+  @page {
+    margin: 12mm;
+  }
+}

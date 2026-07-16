@@ -17,6 +17,8 @@ type Transaction = {
   id: number
   status: string
   total: number
+  paymentMethod?: string
+  amountTendered?: number | null
   createdAt: string
   items: ReceiptItem[]
 }
@@ -144,6 +146,9 @@ function SuccessContent() {
           <CardContent className="space-y-2 text-sm">
             <div className="flex justify-between text-muted-foreground">
               <span>Receipt #{state.transaction.id}</span>
+              {state.transaction.paymentMethod ? (
+                <span className="capitalize">{state.transaction.paymentMethod}</span>
+              ) : null}
             </div>
             {state.transaction.items.map((item, idx) => (
               <div key={idx} className="flex justify-between">
@@ -155,6 +160,23 @@ function SuccessContent() {
               </div>
             ))}
             <Separator className="my-3" />
+            {state.transaction.paymentMethod === "cash" &&
+            state.transaction.amountTendered != null ? (
+              <>
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Cash tendered</span>
+                  <span className="tabular-nums">
+                    {formatTHB(state.transaction.amountTendered)}
+                  </span>
+                </div>
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Change</span>
+                  <span className="tabular-nums">
+                    {formatTHB(state.transaction.amountTendered - state.transaction.total)}
+                  </span>
+                </div>
+              </>
+            ) : null}
             <div className="flex justify-between text-base font-semibold">
               <span>Total paid</span>
               <span className="tabular-nums">{formatTHB(state.transaction.total)}</span>
