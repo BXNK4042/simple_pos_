@@ -41,6 +41,16 @@ export async function buildServerItems(clientItems: RequestItem[]): Promise<Buil
     if (!product) {
       return { ok: false, status: 404, message: `Product ${entry.id} not found` }
     }
+    // Backstop: a product disabled after it was already in the cart must not
+    // be sellable. Enforced here so both the card and cash paths refuse it
+    // identically at the server-trusted totals layer.
+    if (!product.isActive) {
+      return {
+        ok: false,
+        status: 409,
+        message: `“${product.name}” is no longer available for sale`,
+      }
+    }
     const quantity = Math.floor(entry.quantity)
     if (!Number.isFinite(quantity) || quantity <= 0) {
       return { ok: false, status: 400, message: "Invalid quantity" }

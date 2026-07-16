@@ -72,6 +72,10 @@ export function StockInPos() {
         setPendingBarcode(code)
         return
       }
+      if (data.status === "inactive") {
+        toast.error(data.message ?? "This product is disabled")
+        return
+      }
       if (!res.ok || data.status !== "ok" || typeof data.id !== "number") {
         toast.error(data.message ?? "Lookup failed")
         return

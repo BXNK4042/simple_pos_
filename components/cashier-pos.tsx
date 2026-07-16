@@ -56,6 +56,10 @@ export function CashierPos() {
           setUnknownBarcode(scan.barcode)
           return
         }
+        if (scan.status === "inactive") {
+          toast.error(`“${scan.product}” is not available for sale`)
+          return
+        }
         notify(addItemRef.current(scan), scan.product)
       } catch {
         // ignore malformed payloads
@@ -81,6 +85,10 @@ export function CashierPos() {
       }
       if (data.status === "unknown") {
         setUnknownBarcode(code)
+        return
+      }
+      if (data.status === "inactive") {
+        toast.error(`“${data.product}” is not available for sale`)
         return
       }
       notify(cart.addItem(data), data.product)

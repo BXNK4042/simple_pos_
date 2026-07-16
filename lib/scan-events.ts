@@ -14,6 +14,13 @@ export type ScanResult =
       barcode: string
       currency: string
     }
+  | {
+      status: "inactive"
+      id: number
+      barcode: string
+      product: string
+      currency: string
+    }
 
 /** A known product that can be added to the cart. */
 export type ResolvedScan = Extract<ScanResult, { status: "ok" }>

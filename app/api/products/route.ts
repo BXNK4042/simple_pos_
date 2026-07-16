@@ -66,17 +66,18 @@ export async function GET(request: Request) {
   if (q) {
     const items = await prisma.product.findMany({
       where: {
+        isActive: true,
         OR: [{ name: { contains: q } }, { barcode: { contains: q } }],
       },
       take: 8,
       orderBy: { name: "asc" },
-      select: { 
-        id: true, 
+      select: {
+        id: true,
         sku: true,
-        barcode: true, 
-        name: true, 
+        barcode: true,
+        name: true,
         category: true,
-        price: true, 
+        price: true,
         costPrice: true,
         stock: true,
         isActive: true
@@ -89,6 +90,15 @@ export async function GET(request: Request) {
     const product = await prisma.product.findUnique({ where: { barcode } })
     if (!product) {
       return Response.json({ status: "not_found" }, { status: 404 })
+    }
+    if (!product.isActive) {
+      return Response.json({
+        status: "inactive",
+        id: product.id,
+        barcode: product.barcode,
+        name: product.name,
+        message: `“${product.name}” is disabled. Enable it in /products before adding stock.`,
+      })
     }
     return Response.json(toResponse(product))
   }

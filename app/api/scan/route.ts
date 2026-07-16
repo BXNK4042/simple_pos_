@@ -51,6 +51,20 @@ export async function POST(request: Request) {
       return Response.json(scan)
     }
 
+    // Inactive products exist (so "unknown" would wrongly prompt the cashier
+    // to re-register them) but are not sellable. Surface a distinct status so
+    // the cashier client can refuse the add; never broadcast over SSE.
+    if (!product.isActive) {
+      const scan: ScanResult = {
+        status: "inactive",
+        id: product.id,
+        barcode: product.barcode ?? "",
+        product: product.name,
+        currency: CURRENCY,
+      }
+      return Response.json(scan)
+    }
+
     const scan: ScanResult = {
       status: "ok",
       id: product.id,
